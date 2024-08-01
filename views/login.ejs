@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="regRightBg">
+				<div class="regFormCenter">
+					<div class="formHeading">
+						<div class="loginHeading">
+							<h1 class="formHead">Welcome Back</h1>
+							<img src="../public/hand_img.png" alt="welcome hand" />
+						</div>
+						<!-- <p class="formSubhead">
+							Stay connected to your favourite blogging wherever, whenever with
+							BlogVoyage
+						</p> -->
+					</div>
+					<form action="/admin/login" method="post" class="loginForm">
+						<label for="email" class="labelContainer loginInput">
+							Email
+							<input
+								type="email"
+								id="email"
+								name="email"
+								placeholder="Email"
+								class="inputField"
+								required
+							/>
+						</label>
+						<label for="password" class="labelContainer loginInput">
+							Password
+							<input
+								type="password"
+								id="password"
+								name="password"
+								placeholder="Password"
+								class="inputField"
+								required
+							/>
+						</label>
+						<div>
+							<button type="submit" class="regSubmitButton loginInput">Sign in to Account</button>
+						</div>
+						<div class="loginPoint">Don't have an account? <a href="/signup">Register</a></div>
+					</form>
+				</div>
+			</div>
+</body>
+</html>

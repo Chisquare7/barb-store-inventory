@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="regRightBg">
+				<div class="regFormCenter">
+					<div class="formHeading">
+						<h1 class="formHead">Create a New Account</h1>
+						<!-- <p class="formSubhead">
+							Set up your account on BlogVoyage and begin your journey into the
+							world of blogging with us
+						</p> -->
+					</div>
+					<form action="/admin/register" method="post" class="formContainer">
+						<label for="first_name" class="labelContainer">
+							First Name
+							<input
+								type="text"
+								id="first_name"
+								name="first_name"
+								placeholder="First Name"
+								class="inputField"
+								required
+							/>
+						</label>
+						<label for="last_name" class="labelContainer">
+							Last Name
+							<input
+								type="text"
+								id="last_name"
+								name="last_name"
+								placeholder="Last Name"
+								class="inputField"
+								required
+							/>
+						</label>
+						<label for="email" class="labelContainer">
+							Email
+							<input
+								type="email"
+								id="email"
+								name="email"
+								placeholder="Email"
+								class="inputField"
+								required
+							/>
+						</label>
+						<label for="password" class="labelContainer">
+							Password
+							<input
+								type="password"
+								id="password"
+								name="password"
+								placeholder="Password"
+								class="inputField"
+								required
+							/>
+						</label>
+						<label for="gender" class="labelContainer">
+							Gender
+							<input
+								type="text"
+								id="gender"
+								name="gender"
+								placeholder="Gender"
+								class="inputField"
+								required
+							/>
+						</label>
+						<div>
+							<button type="submit" class="regSubmitButton">Create Account</button>
+						</div>
+						<p class="loginPoint">Already have an account? <a href="/login">Login</a></p>
+					</form>
+				</div>
+			</div>
+</body>
+</html>
