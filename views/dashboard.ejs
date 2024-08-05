@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+        <header>
+            <div class="navContainer">
+                <div>
+                    <a href="/home"><%=appName%></a>
+                </div>
+                <div><%-include("partials/header.ejs")-%></div>
+            </div>
+        </header>
+        <div class="allProdBox">
+            <% productDetails.forEach(function(productDetail, index) { %>
+                <div class="eachProdBox">
+                    <div>
+                        <div><%= productDetail.product_image %></div>
+                    </div>
+                    <div>
+                        <h2><%= productDetail.name %></h2>
+                    </div>
+                    <div>
+                        <p><%= productDetail.description %></p>
+                    </div>
+                    <div>
+                        <div><p><%= productDetail.price %></p></div>
+                        <div><p><%= productDetail.stock_level %></p></div>
+                    </div>
+                    <div class="dashboardAction">
+                        <div>
+                            <p>Admin Action:</p>
+                        </div>
+                        <div class="dashActionFlex">
+                            <div class="dashActionBtn">
+                                <form action="">
+                                    <% if (productDetail.product_state === "Hidden") { %>
+                                        <input type="hidden" name="product_state" value="Published" />
+                                        <button type="submit" formmethod="post" class="eachButton">
+                                            Publish
+                                        </button>
+                                    <% } else { %>
+                                        <input type="hidden" name="product_state" value="Hidden" />
+                                        <button type="submit" formmethod="post" class="eachButton">
+                                            Hide Product
+                                        </button>
+                                    <% } %>
+                                </form>
+                            </div>
+                            <div class="dashActionBtn">
+                                <button class="eachButton">
+                                    <a href="/edit/<%= productDetail._id %>" class="editButton">Edit Product</a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+  </body>
+</html>

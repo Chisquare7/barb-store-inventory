@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%=appName%> | Edit Product</title>
+  </head>
+  <body>
+    <div>
+        <div>
+            <header>
+                <div class="navContainer">
+                    <div class="appName">
+                        <a href="/home" class="appName"><%=appName%></a>
+                    </div>
+                    <div><%-include("partials/header.ejs")-%></div>
+                </div>
+            </header>
+            <main>
+                <form action="/products/edit-product/<%= productToEdit._id %>" method="post">
+                    <label for="name" class="labelContainer loginInput">
+                        Product Name
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Product name"
+                            class="inputField"
+                            required
+                            value="<%= productToEdit.name %>"
+                        />
+                    </label>
+                    <label for="description" class="labelContainer loginInput">
+                        Product Description
+                        <textarea name="description" id="description" cols="30" rows="10" class="inputField" placeholder="Edit your product description here" required>
+                            <%= productToEdit.description %>
+                        </textarea>
+                    </label>
+                    <label for="price" class="labelContainer loginInput">
+                        Product Price
+                        <input
+                            type="number"
+                            id="price"
+                            name="price"
+                            placeholder="Price of Product"
+                            class="inputField"
+                            required
+                            value="<%= productToEdit.price %>"
+                        />
+                    </label>
+                    <label for="product_image" class="labelContainer loginInput">
+                        Product Image URL
+                        <input
+                            type="text"
+                            id="product_image"
+                            name="product_image"
+                            placeholder="Product Image Link"
+                            class="inputField"
+                            required
+                            value="<%= productToEdit.product_image %>"
+                        />
+                    </label>
+                    <label for="stock_level" class="labelContainer loginInput">
+                        Product Stock Level
+                        <input
+                            type="number"
+                            id="stock_level"
+                            name="stock_level"
+                            placeholder="Product stock level"
+                            class="inputField"
+                            required
+                            value="<%= productToEdit.stock_level %>"
+                        />
+                    </label>
+                    <div id="variations">
+                        <p>Variations</p>
+                        <% productToEdit.variations.forEach((variation, index) => { %>
+                            <div class="variation">
+                                <label for="size" class="labelContainer loginInput">
+                                    Product Size
+                                    <input
+                                        type="text"
+                                        name="variations[<%= index %>][size]"
+                                        placeholder="Product Size"
+                                        class="inputField"
+                                        required
+                                        value="<%= variation.size %>"
+                                    />
+                                </label>
+                                <label for="color" class="labelContainer loginInput">
+                                    Product Color
+                                    <input
+                                        type="text"
+                                        name="variations[<%= index %>][color]"
+                                        placeholder="Product Color"
+                                        class="inputField"
+                                        required
+                                        value="<%= variation.color %>"
+                                    />
+                                </label>
+                                <label for="additionalDetails" class="labelContainer loginInput">
+                                    Product Additional Details
+                                    <input
+                                        type="text"
+                                        name="variations[<%= index %>][additionalDetails]"
+                                        placeholder="Product other details"
+                                        class="inputField"
+                                        required
+                                        value="<%= variation.additionalDetails %>"
+                                    />
+                                </label>
+                            </div>
+                        <% }) %>
+                    </div>
+                    <div>
+                        <button type="submit">Update Product</button>
+                    </div>
+                </form>
+            </main>
+        </div>
+    </div>
+  </body>
+</html>

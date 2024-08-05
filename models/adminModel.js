@@ -23,6 +23,6 @@ adminSchema.methods.isValidPassword = async function (password) {
     return comparePassword;
 }
 
-const adminModel = mongoose.model("admin", adminSchema);
+const adminModel = mongoose.model("Admin", adminSchema);
 
 module.exports = adminModel;
