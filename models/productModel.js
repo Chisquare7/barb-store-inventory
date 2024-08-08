@@ -10,7 +10,7 @@ const productSchema = new Schema({
     product_image: {type: String, required: true},
     stock_level: {type: Number, required: true},
     product_state: {type: String, enum: ["Hidden", "Published"], default: "Hidden"},
-    variations: [{type: Schema.Types.ObjectId, ref: "variations"}],
+    variations: [{type: Schema.Types.ObjectId, ref: "Variations"}],
     admin_id: {type: Schema.Types.ObjectId, ref: "Admin"}
 });
 

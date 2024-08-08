@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/style.css" />
+    <title><%=appName%> | All Products</title>
+    <style>
+      .redIcon {
+        filter: hue-rotate(0deg) saturate(1000%) brightness(0.5);
+      }
+
+      .cartTotalRed, #cartTotalDisplay {
+        background-color: red;
+        font-size: .875rem;
+        font-weight: 600;
+        color: white;
+        padding: 2px;
+        border-radius: 5px;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(){
+        let cartTotal = 0;
+        const cartItems = {};
+
+        function cartTotalUpdated(price, isAdding) {
+          if (isAdding) {
+            cartTotal += price;
+          } else {
+            cartTotal -= price;
+          }
+
+          const cartTotalDisplay = document.getElementById("cartTotalDisplay");
+          cartTotalDisplay.textContent = `$${cartTotal.toFixed(2)}`;
+          cartTotalDisplay.classList.add("cartTotalRed");
+        }
+
+        document.querySelectorAll(".cartIcon img").forEach(icon => {
+          icon.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            const priceElement = this.closest(".eachProdBox").querySelector(".itemPrice");
+            const price = parseFloat(priceElement.textContent.replace("$", "").trim());
+            const productId = this.dataset.productId;
+            const isAlreadyInCart = cartItems[productId];
+
+            if (isAlreadyInCart) {
+              cartTotalUpdated(price, false);
+              delete cartItems[productId];
+            } else {
+              cartTotalUpdated(price, true);
+              cartItems[productId] = true
+            }
+
+            this.classList.toggle("redIcon", !isAlreadyInCart)
+          })
+        })
+      })
+    </script>
+  </head>
+  <body>
+    <div class="overall">
+      <div>
+        <div class="navLine">
+          <div class="topNavContainer">
+            <div class="navFlex">
+              <div class="navIcons">
+                <a href="/home">
+                  <img src="../public/assets/back_icon.png" alt="Back Icon">
+                </a>
+                <span class="tooltip">Home</span>
+              </div>
+              <div class="navHeading">
+                <h1 class="navHead">Explore Products</h1>
+              </div>
+              <div class="navIcons">
+                <a href="/orders">
+                  <img src="../public/assets/shopping-icon.png" alt="Shopping Icon">
+                </a>
+                <span class="tooltip">Cart</span>
+                <span id="cartTotalDisplay">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <main>
+          <div class="prodGrid allProdGrid">
+            <% productDetails.forEach(function(productDetail, index) { %>
+              <a href="/products/<%= productDetail._id %>">
+                <div class="eachProdBox">
+                  <div class="eachProdImg">
+                    <div class="cartIcon">
+                      <img src="../public/assets/shopping-icon.png" alt="Cart Icon" data-product-id="<%= productDetail._id %>">
+                    </div>
+                    <div class="prodImage allProdImg">
+                      <img src="<%= productDetail.product_image %>" alt="<%= productDetail.name %>">
+                    </div>
+                  </div>
+                  <div class="eachProdDetails">
+                    <div class="prodName prodItem">
+                      <p class="itemName">
+                        <%- productDetail.name %>
+                      </p>
+                    </div>
+                    <div class="prodPrice prodItem">
+                      <p class="itemPrice">
+                        &#36; <%- productDetail.price %>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            <% }); %>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

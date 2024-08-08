@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="overall">
+        <div class="navLine">
+			<div class="topNavContainer">
+				<div class="navFlex">
+					<div class="navIcons">
+						<a href="">
+							<img src="../public/assets/back_icon.png" alt="Back Icon">
+						</a>
+						<span class="tooltip">Order</span>
+					</div>
+					<div class="navHeading">
+						<h1 class="navHead">Shipping & Payment Info</h1>
+					</div>
+					<div class="navIcons"></div>
+				</div>
+			</div>
+		</div>
+        <main>
+            <form action="/admin/login" method="post" class="FormInputContainer">
+                <label for="name" class="labelContainer formInput">
+                    NAME
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Johnny Evans"
+                        class="inputField"
+                        required
+                    />
+                </label>
+                <label for="phone_number" class="labelContainer formInput">
+                    PHONE NUMBER
+                    <input
+                        type="tel"
+                        id="phone_number"
+                        name="phone_number"
+                        placeholder="08012345678"
+                        class="inputField"
+                        required
+                    />
+                </label>
+                <label for="email" class="labelContainer formInput">
+                    EMAIL
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="synergysneaks@mail.com"
+                        class="inputField"
+                        required
+                    />
+                </label>
+                <label for="delivery_address" class="labelContainer formInput">
+                    DELIVERY ADDRESS
+                    <input
+                        type="text"
+                        id="delivery_address"
+                        name="delivery_address"
+                        placeholder="Enter your address"
+                        class="inputField"
+                        required
+                    />
+                </label>
+                <label for="card_number" class="labelContainer formInput">
+                    CARD NUMBER
+                    <input
+                        type="text"
+                        id="card_number"
+                        name="card_number"
+                        placeholder="Enter your card number"
+                        class="inputField"
+                        required
+                    />
+                </label>
+                <div>
+                    <label for="month_year" class="labelContainer formInput">
+                        MM/YY
+                        <input
+                            type="text"
+                            id="month_year"
+                            name="month_year"
+                            placeholder="MM/YY"
+                            class="inputField"
+                            required
+                        />
+                    </label>
+                    <label for="cvv" class="labelContainer formInput">
+                        CVV
+                        <input
+                            type="text"
+                            id="cvv"
+                            name="cvv"
+                            placeholder="***"
+                            class="inputField"
+                            required
+                        />
+                    </label>
+                </div>
+                <div class="formButton">
+                    <button type="submit" class="formSubmitButton formInput">Proceed To Checkout</button>
+                </div>
+            </form>
+        </main>
+    </div>
+  </body>
+</html>

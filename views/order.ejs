@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="overall">
+        <div class="navLine">
+			<div class="topNavContainer">
+				<div class="navFlex">
+					<div class="navIcons">
+						<a href="">
+							<img src="../public/assets/back_icon.png" alt="Back Icon">
+						</a>
+						<span class="tooltip">Home</span>
+					</div>
+					<div class="navHeading">
+						<h1 class="navHead">Order</h1>
+					</div>
+					<div class="navIcons">
+						<a href="#">
+							<img src="../public/assets/shopping-icon.png" alt=" Shopping Icon">
+						</a>
+						<span class="tooltip">Cart</span>
+					</div>
+				</div>
+			</div>
+		</div>
+        <main>
+            <div>
+                <div class="orderItemGrid">
+                    <div class="orderGridLeft">
+                        <div>
+                            <a href="">
+                                <div class="orderItemImg">
+                                    <div><img src="" alt=""></div>
+                                    <span>SALE</span>
+                                </div>
+                            </a>
+                            <div class="orderItemDetails">
+                                <div>
+                                    <div class="orderItemName"></div>
+                                    <div class="orderItemPrice"></div>
+                                </div>
+                                <div>
+                                    <div class="orderItemSize"></div>
+                                    <div class="orderItemColor"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="orderGridRight">
+                        <div>
+                            <div>
+                                <img src="../public/assets/plus_icon.png" alt="">
+                            </div>
+                            <div><p>1</p></div>
+                            <div><img src="../public/assets/minus_icon.png" alt=""></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="promoCodeGrid">
+                    <label for="promocode" class="labelContainer">
+                        PROMOCODE
+                        <input
+                            type="text"
+                            id="promocode"
+                            name="promocode"
+                            placeholder="Enter the promocode"
+                            class="inputField"
+                            required
+                        />
+                    </label>
+                    <div class="promoButton">
+                        <button type="submit" class="promoSubmitButton">Apply</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="promoCodeLine">
+                    <div class="calcContainer">
+                        <div class="subtotalText">
+                            <p>Subtotal</p>
+                        </div>
+                        <div>
+                            <p class="subtotalAmt"></p>
+                        </div>
+                    </div>
+                    <div class="deliveryContainer">
+                        <div class="deliveryText">
+                            <p>Delivery</p>
+                        </div>
+                        <div><p>Free</p></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <div><p>Total</p></div>
+                    <div><p class="totalAmt"></p></div>
+                </div>
+            </div>
+            <div class="">
+                <button type="submit" class="formSubmitButton">Shipping & Payment Info</button>
+            </div>
+        </main>
+    </div>
+  </body>
+</html>

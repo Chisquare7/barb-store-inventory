@@ -19,7 +19,7 @@
             <% productDetails.forEach(function(productDetail, index) { %>
                 <div class="eachProdBox">
                     <div>
-                        <div><%= productDetail.product_image %></div>
+                        <div><img src="<%= productDetail.product_image %>" alt="<%= productDetail.name %>"></div>
                     </div>
                     <div>
                         <h2><%= productDetail.name %></h2>
@@ -28,7 +28,7 @@
                         <p><%= productDetail.description %></p>
                     </div>
                     <div>
-                        <div><p><%= productDetail.price %></p></div>
+                        <div><p><%= productDetail.price %> USD</p></div>
                         <div><p><%= productDetail.stock_level %></p></div>
                     </div>
                     <div class="dashboardAction">
@@ -37,7 +37,7 @@
                         </div>
                         <div class="dashActionFlex">
                             <div class="dashActionBtn">
-                                <form action="">
+                                <form action="/products/updateState/<%= productDetail._id %>" method="PUT">
                                     <% if (productDetail.product_state === "Hidden") { %>
                                         <input type="hidden" name="product_state" value="Published" />
                                         <button type="submit" formmethod="post" class="eachButton">

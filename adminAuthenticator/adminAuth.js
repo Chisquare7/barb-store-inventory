@@ -20,8 +20,6 @@ const adminAuthenticator = async (req, res, next) => {
 
     res.locals.admin = admin;
 
-    console.log("Authenticated admin:", res.locals.admin);
-
     next();
   } catch (error) {
     console.log(error.message);

@@ -3,35 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../public/style.css" />
     <title>Document</title>
 </head>
 <body>
-    <div class="regRightBg">
-				<div class="regFormCenter">
-					<div class="formHeading">
-						<div class="loginHeading">
-							<h1 class="formHead">Welcome Back</h1>
-							<img src="../public/hand_img.png" alt="welcome hand" />
-						</div>
-						<!-- <p class="formSubhead">
-							Stay connected to your favourite blogging wherever, whenever with
-							BlogVoyage
-						</p> -->
+	<div class="overall">
+		<div class="navLine">
+			<div class="topNavContainer">
+				<div class="navFlex">
+					<div class="navIcons">
+						<a href="/home">
+							<img src="../public/assets/back_icon.png" alt="Back Icon">
+						</a>
+						<span class="tooltip">Home</span>
 					</div>
-					<form action="/admin/login" method="post" class="loginForm">
-						<label for="email" class="labelContainer loginInput">
-							Email
+					<div class="navHeading">
+						<h1 class="navHead">Admin Login</h1>
+					</div>
+					<div class="navIcons">
+						<a href="/products">
+							<img src="../public/assets/products_icon.png" alt=" Products Icon">
+						</a>
+						<span class="tooltip">Products</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="formOverall">
+			<div class="formCenter">
+				<div class="formContainerFlex">
+					<div class="formTop">
+						<div class="formLine"></div>
+						<div class="formHeading">
+							<h1 class="formHead">Welcome Back!</h1>
+						</div>
+						<div class="formSubContext">
+							<p class="formSubhead">
+								<em>
+									Admin Access Only: Log in is restricted to registered admins. You can explore our products as a guest without logging in.
+								</em>
+							</p>
+						</div>
+					</div>
+					<form action="/admin/login" method="post" class="FormInputContainer">
+						<label for="email" class="labelContainer formInput">
+							EMAIL
 							<input
 								type="email"
 								id="email"
 								name="email"
-								placeholder="Email"
+								placeholder="synergysneaks@mail.com"
 								class="inputField"
 								required
 							/>
 						</label>
-						<label for="password" class="labelContainer loginInput">
-							Password
+						<label for="password" class="labelContainer formInput">
+							PASSWORD
 							<input
 								type="password"
 								id="password"
@@ -41,12 +68,13 @@
 								required
 							/>
 						</label>
-						<div>
-							<button type="submit" class="regSubmitButton loginInput">Sign in to Account</button>
+						<div class="formButton">
+							<button type="submit" class="formSubmitButton formInput">Sign In</button>
 						</div>
-						<div class="loginPoint">Don't have an account? <a href="/signup">Register</a></div>
 					</form>
 				</div>
 			</div>
+		</div>
+	</div>
 </body>
 </html>

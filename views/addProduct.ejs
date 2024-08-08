@@ -4,6 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+        .sizeBoxes, .colorBoxes{
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+            cursor: pointer;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 30px;
+            background-color: lightgrey;
+        }
+
+        .selected {
+            background-color: grey;
+        }
+
+        .colorPicker {
+            display: none;
+        }
+    </style>
+    <script>
+        function pickSize(size) {
+            document.getElementById("size").value = size;
+            document.querySelectorAll(".sizeBoxes").forEach(box => {
+                box.classList.remove("selected")
+            });
+            document.getElementById('size-' + size).classList.add('selected');
+        }
+
+        function pickColor(color) {
+            document.getElementById("color").value = color;
+            document.querySelectorAll(".colorBoxes").forEach(box => {
+                box.style.border = "1px solid #000";
+            });
+            document.getElementById(color).style.border = "3px solid #000"
+        }
+    </script>
   </head>
   <body>
     <div>
@@ -68,23 +105,24 @@
                     <div class="variation">
                         <label for="size" class="labelContainer loginInput">
                             Product Size
-                            <input
-                                type="text"
-                                name="variations[0][size]"
-                                placeholder="Product Size"
-                                class="inputField"
-                                required
-                            />
+                            <input type="hidden" id="size" name="variations[0][size]" required>
+                            <div>
+                                <% for (let i = 39; i <= 48; i++) { %>
+                                    <div id="size-<%= i %>" class="sizeBoxes" onclick="pickSize('<%= i %>')"><%= i %></div>
+                                <% } %>
+                            </div>
                         </label>
                         <label for="color" class="labelContainer loginInput">
                             Product Color
-                            <input
-                                type="text"
-                                name="variations[0][color]"
-                                placeholder="Product Color"
-                                class="inputField"
-                                required
-                            />
+                            <input type="hidden" id="color" name="variations[0][color]" required>
+                            <div>
+                                <div id="red" class="colorBoxes" style="background-color: red;" onclick="pickColor('red')"></div>
+                                <div id="blue" class="colorBoxes" style="background-color: blue;" onclick="pickColor('blue')"></div>
+                                <div id="green" class="colorBoxes" style="background-color: green;" onclick="pickColor('green')"></div>
+                                <div id="black" class="colorBoxes" style="background-color: black;" onclick="pickColor('black')"></div>
+                                <div id="white" class="colorBoxes" style="background-color: white;" onclick="pickColor('white')"></div>
+                                <div id="brown" class="colorBoxes" style="background-color: brown;" onclick="pickColor('brown')"></div>
+                            </div>
                         </label>
                         <label for="additionalDetails" class="labelContainer loginInput">
                             Product Additional Details

@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const adminRoute = require("./admin/adminRoute");
 const productRoute = require("./products/productRoute")
 const productModel = require("./models/productModel");
+const variationModel = require("./models/variationModel")
 
 
 const app = express();
@@ -25,10 +26,24 @@ app.use("/admin", adminRoute);
 app.use("/products", productRoute);
 
 
-app.get("/", (req, res) => {
-    res.status(200).render("home", {
-        navs: ["Home", "Products", "Register", "Login"]
-    })
+app.get("/", async (req, res) => {
+    try {
+        const filter = req.query.product_state || "Published";
+
+        const query = {
+            product_state: filter
+        };
+
+        const productDetails = await productModel.find(query);
+
+        res.status(200).render("home", {
+          navs: ["Home", "Products", "Register", "Login"],
+          productDetails,
+        });
+    } catch (error) {
+        console.error("Error retrieving Products:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 app.get("/home", (req, res) => {
@@ -88,6 +103,60 @@ app.get("/edit/:id", adminAuthenticator, async (req, res) => {
         console.error(error);
         res.status(500).send(error);
     }
+});
+
+
+app.get("/products", async (req, res) => {
+    try {
+        const filter = req.query.product_state || "Published";
+
+        const query = {
+            product_state: filter
+        };
+
+        const productDetails = await productModel.find(query);
+
+        res.status(200).render("products", {
+            navs: ["Home", "Products"],
+            productDetails,
+        })
+    } catch (error) {
+        console.error("Error retrieving Products:", error);
+        res.status(500).send("Internal Server Error")
+    }
+});
+
+app.get("/products/:id", async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const product = await productModel.findById(id).populate('variations')
+
+        if (!product) {
+            res.redirect("/404ErrorPage");
+            return
+        };
+
+        res.render("oneProduct", {
+            navs: ["Home", "Products"],
+            admin: res.locals.admin,
+            oneProduct: product
+        })
+    } catch (error) {
+        console.error("Error retrieving one product:", error);
+        res.status(500).send(error);
+    }
+});
+
+app.get("/orders", (req, res) => {
+    res.status(200).render("order", {
+        cartItems: []
+    })
 })
+
+app.get("/logout", (req, res) => {
+  res.clearCookie("jwt");
+  res.redirect("/");
+});
 
 module.exports = app;

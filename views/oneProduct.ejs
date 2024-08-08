@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/style.css" />
+    <title>Document</title>
+    <style>
+      .sizeBoxes,
+      .colorBoxes {
+        width: 45px;
+        height: 45px;
+        display: inline-block;
+        cursor: pointer;
+        border: none;
+        outline: none;
+        border-radius: .625rem;
+        font-size: 1rem;
+        font-weight: 700;
+        text-align: center;
+        line-height: 45px;
+        background-color: #e8eff4;
+        margin: .5em 0 2em;
+      }
+
+      .selected {
+        background-color: #193364;
+        color: #ffcc88;
+      }
+
+      .colorBoxes {
+        border: 1.5px solid #e8eff4;
+      }
+
+      .colorPicker {
+        display: none;
+      }
+
+      .redIcon {
+        filter: hue-rotate(0deg) saturate(1000%) brightness(0.5);
+      }
+
+      .cartTotalRed, #cartTotalDisplay {
+        background-color: red;
+        font-size: .875rem;
+        font-weight: 600;
+        color: white;
+        padding: 2px;
+        border-radius: 5px;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(){
+        let cartTotal = 0;
+        const cartItems = {};
+
+        function cartTotalUpdated(price, isAdding) {
+          if (isAdding) {
+            cartTotal += price;
+          } else {
+            cartTotal -= price;
+          }
+
+          const cartTotalDisplay = document.getElementById("cartTotalDisplay");
+          cartTotalDisplay.textContent = `$${cartTotal.toFixed(2)}`;
+          cartTotalDisplay.classList.add("cartTotalRed");
+        }
+
+        document.querySelectorAll(".shopBag img").forEach(icon => {
+          icon.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            const priceElement = document.querySelector(".oneProdAmt");
+            const price = parseFloat(priceElement.textContent.replace("$", "").trim());
+            const productId = this.dataset.productId;
+            const isAlreadyInCart = cartItems[productId];
+
+            if (isAlreadyInCart) {
+              cartTotalUpdated(price, false);
+              delete cartItems[productId];
+            } else {
+              cartTotalUpdated(price, true);
+              cartItems[productId] = true
+            }
+
+            this.classList.toggle("redIcon", !isAlreadyInCart)
+          })
+        });
+
+        document.querySelector(".oneProdAction").addEventListener("click", function(event) {
+          event.preventDefault();
+
+          const priceElement = document.querySelector(".oneProdAmt");
+          const price = parseFloat(priceElement.textContent.replace("$", "").trim());
+          const productId = document.querySelector(".shopBag img").dataset.productId;
+          const isAlreadyInCart = cartItems[productId];
+
+          if (isAlreadyInCart) {
+            cartTotalUpdated(price, false);
+            delete cartItems[productId];
+          } else {
+            cartTotalUpdated(price, true);
+            cartItems[productId] = true
+          }
+
+          document.querySelector(".shopBag img").classList.toggle("redIcon", !isAlreadyInCart)
+        })
+
+        
+        const priceElement = document.querySelector(".oneProdAmt");
+        const price = parseFloat(priceElement.textContent.replace("$", "").trim());
+        const countElement = document.querySelector(".countZero");
+        let productQuantity = parseInt(countElement.textContent);
+
+        function updateTotalPrice() {
+          const totalPrice = productQuantity * price;
+          const cartTotalDisplay = document.getElementById("cartTotalDisplay");
+          cartTotalDisplay.textContent = `$${totalPrice.toFixed(2)}`;
+          cartTotalDisplay.classList.add("cartTotalRed");
+        }
+
+        document.querySelector(".plusIcon").addEventListener("click", function() {
+          productQuantity++;
+          countElement.textContent = productQuantity;
+          updateTotalPrice();
+        })
+
+        document.querySelector(".minusIcon").addEventListener("click", function() {
+          if (productQuantity  > 0) {
+            productQuantity--;
+            countElement.textContent = productQuantity;
+            updateTotalPrice();
+          }
+        })
+      })
+
+      function selectSize(size) {
+        document.getElementById("selectedSize").value = size;
+        document.querySelectorAll(".sizeBoxes").forEach((box) => {
+          box.classList.remove("selected");
+        });
+        document.getElementById("size-" + size).classList.add("selected");
+      }
+
+      function selectColor(color) {
+        document.getElementById("selectedColor").value = color;
+        document.querySelectorAll(".colorBoxes").forEach((box) => {
+          box.style.border = "1px solid #000";
+        });
+        document.getElementById(color).style.border = "3px solid #000";
+      }
+
+      function setColorBoxBackgrounds() {
+        document.querySelectorAll(".colorBoxes").forEach((box) => {
+          const color = box.getAttribute("data-color");
+          box.style.backgroundColor = color;
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", setColorBoxBackgrounds);
+    </script>
+  </head>
+  <body>
+    <div class="overall">
+      <div class="navLine">
+        <div class="topNavContainer">
+          <div class="navFlex">
+            <div class="navIcons">
+              <a href="/products">
+                <img src="../public/assets/back_icon.png" alt="Back Icon">
+              </a>
+              <span class="tooltip">Products</span>
+            </div>
+            <div class="navIcons">
+              <a href="/orders">
+                <img src="../public/assets/shopping-icon.png" alt=" Shopping Icon">
+              </a>
+              <span class="tooltip">Cart</span>
+              <span id="cartTotalDisplay">$0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <main class="oneProdMain">
+        <div class="oneProdHero">
+          <div class="oneProdImg">
+            <img
+              src="<%= oneProduct.product_image %>"
+              alt="<%= oneProduct.name %>"
+            />
+          </div>
+        </div>
+        <div class="oneProdDivider">
+          <div class="sliderContainer">
+            <div class="sliders"></div>
+            <div class="sliders"></div>
+            <div class="sliders"></div>
+          </div>
+        </div>
+        <div class="oneProdInfos">
+          <div class="oneProdHeading">
+            <div>
+              <h2 class="oneProdHead"><%= oneProduct.name %></h2>
+            </div>
+            <div class="shopBag">
+              <img src="../public/assets/shopping-icon.png" alt="Cart Icon" data-product-id="<%= oneProduct._id %>" />
+            </div>
+          </div>
+          <div class="oneProdPrice oneProdLayout">
+            <div>
+              <p class="oneProdAmt">&#36; <%= oneProduct.price %></p>
+            </div>
+            <div class="itemCount">
+              <div class="countNum countImg minusIcon"><img src="../public/assets/minus_icon.png" alt=" minus icon"></div>
+              <div class="countNum countZero">0</div>
+              <div class="countNum countImg plusIcon"><img src="../public/assets/plus_icon.png" alt="plus icon"></div>
+            </div>
+          </div>
+          <div class="oneProdDesc oneProdLayout">
+            <p class="oneProdSub">Description</p>
+            <p class="oneProdSubhead"><%= oneProduct.description %></p>
+          </div>
+          <form action="/order" method="post" class="oneProdLayout">
+            <input
+              type="hidden"
+              name="product_id"
+              value="<%= oneProduct._id %>"
+            />
+            <label for="size" class="oneProdSub variationContainer">
+              Size
+              <!-- <input type="hidden" id="selectedSize" name="variations[0][size]" required> -->
+              <input type="hidden" id="selectedSize" name="size" required />
+              <div class="variationBox">
+                <% const uniqueSizes = [...new
+                Set(oneProduct.variations.map(variation => variation.size))]; %>
+                <% uniqueSizes.forEach(size => { %>
+                <div
+                  id="size-<%= size %>"
+                  class="sizeBoxes variationSquare"
+                  onclick="selectSize('<%= size %>')"
+                >
+                  <%= size %>
+                </div>
+                <% }) %>
+                <!-- <% oneProduct.variations.forEach(variation => { %>
+                            <% if (variation.size) { %>
+                                <div id="size-<%= variation.size %>" class="sizeBoxes" onclick="selectSize('<%= variation.size %>')"><%= variation.size %></div>
+                            <% } %>
+                        <% }) %> -->
+              </div>
+            </label>
+            <label for="color" class="oneProdSub variationContainer">
+              Color
+              <!-- <input type="hidden" id="selectedColor" name="variations[0][color]" required> -->
+              <input type="hidden" id="selectedColor" name="color" required />
+              <div class="variationBox">
+                <% const uniqueColors = [...new
+                Set(oneProduct.variations.map(variation => variation.color))];
+                %> <% uniqueColors.forEach(color => { %>
+                <div
+                  id="<%= color %>"
+                  class="colorBoxes variationSquare"
+                  data-color="<%= color %>"
+                  onclick="selectColor('<%= color %>')"
+                ></div>
+                <% }) %>
+                <!-- <% oneProduct.variations.forEach(variation => { %>
+                            <% if (variation.color) { %>
+                                <div id="<%= variation.color %>" class="colorBoxes" data-color='<%= variation.color %>' onclick="selectColor('<%= variation.color %>')"></div>
+                            <% } %>
+                        <% }) %> -->
+              </div>
+            </label>
+            <div class="oneProdBtn">
+              <button type="submit" class="oneProdAction">Add To Cart</button>
+              <p class="oneProdInstruct"><em class="instructItalic">Please click on the item size and color boxes before adding to your cart</em></p>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

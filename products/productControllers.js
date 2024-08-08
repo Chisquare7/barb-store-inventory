@@ -13,7 +13,7 @@ const addProduct = async ({name, description, price, product_image, stock_level,
             product_image: productDetails.product_image,
             stock_level: productDetails.stock_level,
             product_state: productDetails.product_state,
-            variations: productDetails.variations || [],
+            variations: productDetails.variations,
             admin_id: productDetails.admin_id
         });
 
@@ -60,6 +60,22 @@ const editProduct = async (req, res) => {
 }
 
 
+const changeStatus = (req, res) => {
+  const id = req.params.id;
+  const update = req.body;
+
+  productModel
+    .findByIdAndUpdate(id, update, { new: true })
+    .then((newStatus) => {
+      res.redirect("/dashboard");
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send(error);
+    });
+};
+
+
 const hideProduct = async (req, res) => {
     const productId = req.params.id;
 
@@ -104,4 +120,5 @@ module.exports = {
   editProduct,
   hideProduct,
   showProduct,
+  changeStatus,
 };

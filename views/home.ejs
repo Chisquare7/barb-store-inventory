@@ -3,15 +3,211 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../public/style.css">
+    <link rel="stylesheet" href="../public/style.css" />
     <title>home</title>
+    <style>
+      .redIcon {
+        filter: hue-rotate(0deg) saturate(1000%) brightness(0.5);
+      }
+
+      .cartTotalRed, #cartTotalDisplay {
+        background-color: red;
+        font-size: .875rem;
+        font-weight: 600;
+        color: white;
+        padding: 2px;
+        border-radius: 5px;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(){
+        let cartTotal = 0;
+        const cartItems = JSON.parse(localStorage.getItem("cartItems")) || {};
+
+        function cartTotalUpdated(price, isAdding) {
+          if (isAdding) {
+            cartTotal += price;
+          } else {
+            cartTotal -= price;
+          }
+
+          const cartTotalDisplay = document.getElementById("cartTotalDisplay");
+          cartTotalDisplay.textContent = `$${cartTotal.toFixed(2)}`;
+          cartTotalDisplay.classList.add("cartTotalRed");
+        }
+
+        function updateCartStorage() {
+          localStorage.setItem("cartItems", JSON.stringify(cartItems))
+        }
+
+        document.querySelectorAll(".cartIcon img").forEach(icon => {
+          icon.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            const priceElement = this.closest(".eachProdBox").querySelector(".itemPrice");
+            const price = parseFloat(priceElement.textContent.replace("$", "").trim());
+            const productId = this.dataset.productId;
+            const productName = this.closest(".eachProdBox").querySelector(".itemName").textContent;
+            const productImage = this.closest(".eachProdBox").querySelector(".prodImage img").src;
+            const productSize = this.closest(".eachProdBox").querySelector("#selectedSize").value || "";
+            const productColor = this.closest(".eachProdBox").querySelector("#selectedColor").value || "";
+            const isAlreadyInCart = cartItems[productId];
+
+            if (isAlreadyInCart) {
+              cartTotalUpdated(price, false);
+              delete cartItems[productId];
+            } else {
+              cartTotalUpdated(price, true);
+              cartItems[productId] = {price, productName, productImage, productSize, productColor}
+            }
+
+            this.classList.toggle("redIcon", !isAlreadyInCart);
+            updateCartStorage();
+          })
+        })
+      })
+    </script>
   </head>
   <body>
-    <header>
-        <%-include("partials/header.ejs")-%>
-    </header>
-    <main>
-        <h1>WELCOME HOME</h1>
-    </main>
+    <div class="overall">
+      <header>
+        <div class="navContainer">
+          <div class="appName"></div>
+          <div><%-include("partials/header.ejs")-%></div>
+          <div class="navIcons">
+						<a href="/orders">
+							<img src="../public/assets/shopping-icon.png" alt=" Shopping Icon">
+						</a>
+						<span class="tooltip">Cart</span>
+            <span id="cartTotalDisplay">$0.00</span>
+					</div>
+        </div>
+      </header>
+      <main>
+        <section class="heroSect allSect">
+          <div class="heroBanner">
+            <div class="heroHeading hero">
+              <h1 class="heroHead">Welcome To BarbHub!<br>50% Off</h1>
+            </div>
+            <div class="heroImage">
+              <img src="../public/assets/hero_blue-sport-NBG.png" alt="Hero Image - Sneakers">
+            </div>
+          </div>
+          <div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </section>
+        <section class="bestSellerSect allSect">
+          <div class="homeProdLayout">
+            <div class="topLayout">
+              <div class="layoutHeading">
+                <h3 class="layoutHead">Best sellers</h3>
+              </div>
+              <div class="layoutRight">
+                <a href="/products" class="allView">
+                  <p class="allViewLink linkProd">View all</p>
+                  <div class="rightArrow">
+                    <img src="../public/assets/right-arrow.png" alt="right arrow" class="linkProd">
+                  </div>
+                </a>
+
+              </div>
+            </div>
+            <div class="prodGrid">
+              <% const bestSellers = productDetails.slice(0, 4); %>
+              <% bestSellers.forEach(function(productDetail) { %>
+                <a href="/products/<%= productDetail._id %>">
+                  <div class="eachProdBox">
+                    <div class="eachProdImg">
+                      <div class="cartIcon">
+                        <img src="../public/assets/shopping-icon.png" alt="Shopping Icon" data-product-id="<%= productDetail._id %>">
+                      </div>
+                      <div class="prodImage">
+                        <img src="<%= productDetail.product_image %>" alt="<%= productDetail.name %>">
+                      </div>
+                    </div>
+                    <div class="eachProdDetails">
+                      <div class="prodName prodItem">
+                        <p class="itemName">
+                          <%- productDetail.name %>
+                        </p>
+                      </div>
+                      <div class="prodPrice prodItem">
+                        <p class="itemPrice">
+                          &#36; <%- productDetail.price %>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              <% }); %>
+            </div>
+          </div>
+        </section>
+        <section class="featSect allSect">
+          <div class="featBanner">
+            <div class="featLeft">
+              <h2 class="featHead">Take 50% Off Now!</h2>
+              <div class="featButton">
+                <a href="/products">
+                  <button class="featBtn">Shop Now</button>
+                </a>
+              </div>
+            </div>
+            <div class="featImage">
+              <img src="../public/assets/cute-pair-shoe.png" alt="Cute Pair shoe">
+            </div>
+          </div>
+        </section>
+        <section class="featProdSection allSect">
+          <div class="homeProdLayout">
+            <div class="topLayout">
+              <div class="layoutHeading">
+                <h3 class="layoutHead">Featured products</h3>
+              </div>
+              <div class="layoutRight">
+                <a href="/products" class="allView">
+                  <p class="allViewLink linkProd">View all</p>
+                  <div class="rightArrow">
+                    <img src="../public/assets/right-arrow.png" alt="right arrow" class="linkProd">
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="prodGrid featGrid">
+              <% const featuredProducts = productDetails.slice(0, 5); %>
+              <% featuredProducts.forEach(function(productDetail) { %>
+                <a href="/products/<%= productDetail._id %>">
+                  <div class="eachProdBox">
+                    <div class="eachProdImg eachFeatImg">
+                      <div class="cartIcon">
+                        <img src="../public/assets/shopping-icon.png" alt="Cart Icon">
+                      </div>
+                      <div class="prodImage">
+                        <img src="<%= productDetail.product_image %>" alt="<%= productDetail.name %>">
+                      </div>
+                    </div>
+                    <div class="eachProdDetails">
+                      <div class="prodName prodItem">
+                        <p class="itemName">
+                          <%- productDetail.name %>
+                        </p>
+                      </div>
+                      <div class="prodPrice prodItem">
+                        <p class="itemPrice">
+                          &#36; <%- productDetail.price %>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              <% }); %>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
   </body>
 </html>
