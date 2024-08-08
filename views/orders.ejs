@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="overall">
+        <div class="navLine">
+			<div class="topNavContainer">
+				<div class="navFlex">
+					<div class="navIcons">
+						<a href="/products">
+							<img src="../public/assets/back_icon.png" alt="Back Icon">
+						</a>
+						<span class="tooltip">Products</span>
+					</div>
+					<div class="navHeading">
+						<h1 class="navHead">Order</h1>
+					</div>
+					<div class="navIcons">
+						<a href="#">
+							<img src="../public/assets/shopping-icon.png" alt=" Shopping Icon">
+						</a>
+						<span class="tooltip">Cart</span>
+					</div>
+				</div>
+			</div>
+		</div>
+        <main>
+            <% if (Object.keys(cartItems).length === 0) { %>
+                <p>No products in the cart.</p>
+            <% } else { %>
+                <% Object.keys(cartItems).forEach(productId => { %>
+                    <% const item = cartItems[productId]; %>
+                    <div class="eachOrder">
+                        <div class="orderItemGrid">
+                            <div class="orderGridLeft">
+                                <div>
+                                    <a href="">
+                                        <div class="orderItemImg">
+                                            <div class="itemImage"><img src="<%= item.productImage %>" alt="<%= item.productName %>"></div>
+                                            <span class="saleText">SALE</span>
+                                        </div>
+                                    </a>
+                                    <div class="orderItemDetails">
+                                        <div>
+                                            <div class="orderItemName orderItemInfo"><%= item.productName %></div>
+                                            <div class="orderItemPrice orderItemInfo">$<%= item.price %></div>
+                                        </div>
+                                        <div>
+                                            <div class="orderItemSize orderItemInfo">Size: <%= item.productSize %></div>
+                                            <div class="orderItemColor orderItemInfo">Color: <%= item.productColor %></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="orderGridRight">
+                                <div>
+                                    <div>
+                                        <form action="/add-to-cart" method="post">
+                                            <input type="hidden" name="productId" value="<%= productId %>">
+                                            <input type="hidden" name="price" value="<%= item.price %>">
+                                            <input type="hidden" name="productName" value="<%= item.productName %>">
+                                            <input type="hidden" name="productImage" value="<%= item.productImage %>">
+                                            <input type="hidden" name="productSize" value="<%= item.productSize %>">
+                                            <input type="hidden" name="productColor" value="<%= item.productColor %>">
+                                            <button type="submit" class="mathIcon plusAdd">
+                                                <img src="../public/assets/plus_icon.png" alt="Add Icon">
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div><p>1</p></div>
+                                    <div>
+                                        <form action="/remove-from-cart" method="post">
+                                            <input type="hidden" name="productId" value="<%= productId %>">
+                                            <button type="submit" class="mathIcon">
+                                                <img src="../public/assets/minus_icon.png" alt="Remove Icon">
+                                            </button>
+                                        </form>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+                <div class="promoContainer">
+                    <div class="promoCodeGrid">
+                        <label for="promocode" class="labelContainer promoInput">
+                            PROMOCODE
+                            <input
+                                type="text"
+                                id="promocode"
+                                name="promocode"
+                                placeholder="Enter the promocode"
+                                class="inputField"
+                                required
+                            />
+                        </label>
+                        <div class="promoButton applyPromo ">
+                            <button type="submit" class="formSubmitButton promoApply">Apply</button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="promoCodeLine">
+                        <div class="calcContainer eachOrderTotalAmt">
+                            <div class="subtotalText">
+                                <p class="orderAmountDetails subTotalAmt">Subtotal</p>
+                            </div>
+                            <div>
+                                <p class="orderAmountDetails subTotalAmt">$<%= Object.values(cartItems).reduce((total, item) => total + item.price, 0).toFixed(2) %></p>
+                            </div>
+                        </div>
+                        <div class="deliveryContainer eachOrderTotalAmt">
+                            <div class="deliveryText">
+                                <p class="orderDeliveryText">Delivery</p>
+                            </div>
+                            <div><p class="deliveryFree">Free</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="orderTotalContainer eachOrderTotalAmt">
+                        <div><p class="orderAmountDetails totalAmt">Total</p></div>
+                        <div><p class="orderAmountDetails totalAmt">$<%= Object.values(cartItems).reduce((total, item) => total + item.price, 0).toFixed(2) %></p></div>
+                    </div>
+                </div>
+                <div class="orderShipAction">
+                    <button type="submit" class="formSubmitButton orderShipInfo">Shipping & Payment Info</button>
+                </div>
+            <% } %>  
+        </main>
+    </div>
+  </body>
+</html>

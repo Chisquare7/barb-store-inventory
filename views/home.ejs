@@ -22,7 +22,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", function(){
         let cartTotal = 0;
-        const cartItems = JSON.parse(localStorage.getItem("cartItems")) || {};
+        const cartItems = JSON.parse('<%- JSON.stringify(cartItems || {}) %>');
 
         function cartTotalUpdated(price, isAdding) {
           if (isAdding) {
@@ -36,22 +36,24 @@
           cartTotalDisplay.classList.add("cartTotalRed");
         }
 
-        function updateCartStorage() {
-          localStorage.setItem("cartItems", JSON.stringify(cartItems))
-        }
-
         document.querySelectorAll(".cartIcon img").forEach(icon => {
           icon.addEventListener("click", function(event) {
             event.preventDefault();
 
+            const productId = this.dataset.productId;
+            if (!productId) {
+              console.error("Product ID is undefined");
+              return;
+            }
+
             const priceElement = this.closest(".eachProdBox").querySelector(".itemPrice");
             const price = parseFloat(priceElement.textContent.replace("$", "").trim());
-            const productId = this.dataset.productId;
-            const productName = this.closest(".eachProdBox").querySelector(".itemName").textContent;
+            const productName = this.closest(".eachProdBox").querySelector(".itemName").textContent.trim();
             const productImage = this.closest(".eachProdBox").querySelector(".prodImage img").src;
-            const productSize = this.closest(".eachProdBox").querySelector("#selectedSize").value || "";
-            const productColor = this.closest(".eachProdBox").querySelector("#selectedColor").value || "";
+            const productSize = this.closest(".eachProdBox").querySelector("#selectedSize")?.value || "No size";
+            const productColor = this.closest(".eachProdBox").querySelector("#selectedColor")?.value || "No color";
             const isAlreadyInCart = cartItems[productId];
+
 
             if (isAlreadyInCart) {
               cartTotalUpdated(price, false);
@@ -62,7 +64,33 @@
             }
 
             this.classList.toggle("redIcon", !isAlreadyInCart);
-            updateCartStorage();
+
+            const payLoad = {
+              productId,
+              price,
+              productName,
+              productImage,
+              productSize,
+              productColor
+            };
+
+            fetch("/add-to-cart", {
+              method: "POST",
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payLoad)
+            }).then(response => {
+              return response.json()
+            }).then(data => {
+                if (data.success) {
+                    console.log("Cart updated successfully");
+                } else {
+                    console.error("Failed to update cart");
+                }
+              }).catch (error => {
+                console.error("Error:", error)
+              })
           })
         })
       })
@@ -72,15 +100,17 @@
     <div class="overall">
       <header>
         <div class="navContainer">
-          <div class="appName"></div>
-          <div><%-include("partials/header.ejs")-%></div>
-          <div class="navIcons">
-						<a href="/orders">
-							<img src="../public/assets/shopping-icon.png" alt=" Shopping Icon">
-						</a>
-						<span class="tooltip">Cart</span>
-            <span id="cartTotalDisplay">$0.00</span>
-					</div>
+          <div class="appName"><a href="/home" class="appName"><%=appName%></div>
+          <div class="navContainerRight">
+            <div><%-include("partials/header.ejs")-%></div>
+            <div class="navIcons">
+              <a href="/orders">
+                <img src="../public/assets/shopping-icon.png" alt=" Shopping Icon">
+              </a>
+              <span class="tooltip">Cart</span>
+              <span id="cartTotalDisplay">$0.00</span>
+            </div>
+          </div>
         </div>
       </header>
       <main>
@@ -119,7 +149,7 @@
               <% const bestSellers = productDetails.slice(0, 4); %>
               <% bestSellers.forEach(function(productDetail) { %>
                 <a href="/products/<%= productDetail._id %>">
-                  <div class="eachProdBox">
+                  <div class="eachProdBox" data-product-id="<%= productDetail._id %>">
                     <div class="eachProdImg">
                       <div class="cartIcon">
                         <img src="../public/assets/shopping-icon.png" alt="Shopping Icon" data-product-id="<%= productDetail._id %>">
@@ -180,10 +210,10 @@
               <% const featuredProducts = productDetails.slice(0, 5); %>
               <% featuredProducts.forEach(function(productDetail) { %>
                 <a href="/products/<%= productDetail._id %>">
-                  <div class="eachProdBox">
+                  <div class="eachProdBox" data-product-id="<%= productDetail._id %>">
                     <div class="eachProdImg eachFeatImg">
                       <div class="cartIcon">
-                        <img src="../public/assets/shopping-icon.png" alt="Cart Icon">
+                        <img src="../public/assets/shopping-icon.png" alt="Cart Icon" data-product-id="<%= productDetail._id %>">
                       </div>
                       <div class="prodImage">
                         <img src="<%= productDetail.product_image %>" alt="<%= productDetail.name %>">

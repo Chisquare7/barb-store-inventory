@@ -3,6 +3,7 @@ const express = require("express");
 const { connectDatabase } = require("./config/mongoose");
 const {adminAuthenticator} = require("./adminAuthenticator/adminAuth")
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
 const adminRoute = require("./admin/adminRoute");
 const productRoute = require("./products/productRoute")
 const productModel = require("./models/productModel");
@@ -10,24 +11,32 @@ const variationModel = require("./models/variationModel")
 
 
 const app = express();
+require("dotenv").config();
 
 connectDatabase();
 
-app.locals.appName = "Barb Shoe Hub"
+app.locals.appName = "Barb Hub"
 
 app.set("view engine", "ejs");
 app.set("views", "views")
 
 
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser())
+app.use(express.json());
+app.use(cookieParser());
 app.use("/public", express.static("public"));
 app.use("/admin", adminRoute);
 app.use("/products", productRoute);
-
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {secure: false}
+}))
 
 app.get("/", async (req, res) => {
     try {
+        const cartItems = req.session.cartItems || {};
         const filter = req.query.product_state || "Published";
 
         const query = {
@@ -37,8 +46,9 @@ app.get("/", async (req, res) => {
         const productDetails = await productModel.find(query);
 
         res.status(200).render("home", {
-          navs: ["Home", "Products", "Register", "Login"],
+          navs: ["Home", "Products", "Login"],
           productDetails,
+          cartItems,
         });
     } catch (error) {
         console.error("Error retrieving Products:", error);
@@ -149,9 +159,39 @@ app.get("/products/:id", async (req, res) => {
 });
 
 app.get("/orders", (req, res) => {
-    res.status(200).render("order", {
-        cartItems: []
-    })
+    const cartItems = req.session.cartItems || {};
+
+    if (Object.keys(cartItems).length === 0) {
+        res.status(200).render("emptyCart");
+    } else {
+        res.status(200).render("orders", {cartItems})
+    }
+})
+
+app.post("/add-to-cart", (req, res) => {
+    const {productId, price, productName, productImage, productSize = "No size", productColor = "No color"} = req.body;
+    if (!productId || !price || !productName || !productImage) {
+        console.error("Missing required fields:", req.body);
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
+    }
+
+    const cartItems = req.session.cartItems || {};
+    cartItems[productId] = {price, productName, productImage, productSize, productColor};
+    req.session.cartItems = cartItems;
+
+    res.json({success: true})
+});
+
+app.post("/remove-from-cart", (req, res) => {
+    const {productId} = req.body;
+    const cartItems = req.session.cartItems || {};
+
+    delete cartItems[productId];
+    req.session.cartItems = cartItems;
+
+    res.json({ success: true });
 })
 
 app.get("/logout", (req, res) => {

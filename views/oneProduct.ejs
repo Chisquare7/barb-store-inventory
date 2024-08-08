@@ -228,7 +228,6 @@
             />
             <label for="size" class="oneProdSub variationContainer">
               Size
-              <!-- <input type="hidden" id="selectedSize" name="variations[0][size]" required> -->
               <input type="hidden" id="selectedSize" name="size" required />
               <div class="variationBox">
                 <% const uniqueSizes = [...new
@@ -242,16 +241,10 @@
                   <%= size %>
                 </div>
                 <% }) %>
-                <!-- <% oneProduct.variations.forEach(variation => { %>
-                            <% if (variation.size) { %>
-                                <div id="size-<%= variation.size %>" class="sizeBoxes" onclick="selectSize('<%= variation.size %>')"><%= variation.size %></div>
-                            <% } %>
-                        <% }) %> -->
               </div>
             </label>
             <label for="color" class="oneProdSub variationContainer">
               Color
-              <!-- <input type="hidden" id="selectedColor" name="variations[0][color]" required> -->
               <input type="hidden" id="selectedColor" name="color" required />
               <div class="variationBox">
                 <% const uniqueColors = [...new
@@ -264,11 +257,6 @@
                   onclick="selectColor('<%= color %>')"
                 ></div>
                 <% }) %>
-                <!-- <% oneProduct.variations.forEach(variation => { %>
-                            <% if (variation.color) { %>
-                                <div id="<%= variation.color %>" class="colorBoxes" data-color='<%= variation.color %>' onclick="selectColor('<%= variation.color %>')"></div>
-                            <% } %>
-                        <% }) %> -->
               </div>
             </label>
             <div class="oneProdBtn">
