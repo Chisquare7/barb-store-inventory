@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../public/style.css" />
     <title>home</title>
-    <style>
+    <!-- <style>
       .redIcon {
         filter: hue-rotate(0deg) saturate(1000%) brightness(0.5);
       }
@@ -18,11 +18,13 @@
         padding: 2px;
         border-radius: 5px;
       }
-    </style>
+    </style> -->
     <script>
       document.addEventListener("DOMContentLoaded", function(){
         let cartTotal = 0;
-        const cartItems = JSON.parse('<%- JSON.stringify(cartItems || {}) %>');
+        const cartItemsRaw = '<%- JSON.stringify(cartItems || {}) %>';
+
+        const cartItems = JSON.parse(cartItemsRaw);
 
         function cartTotalUpdated(price, isAdding) {
           if (isAdding) {

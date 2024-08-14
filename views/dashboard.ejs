@@ -3,37 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/style.css" />
     <title>Document</title>
   </head>
   <body>
-    <div>
+    <div class="overall">
         <header>
             <div class="navContainer">
-                <div>
+                <div class="appName">
                     <a href="/home"><%=appName%></a>
                 </div>
-                <div><%-include("partials/header.ejs")-%></div>
+                <div>
+                    <div><%-include("partials/header.ejs")-%></div>
+                </div>
             </div>
         </header>
-        <div class="allProdBox">
+        <div class="prodGrid">
             <% productDetails.forEach(function(productDetail, index) { %>
                 <div class="eachProdBox">
-                    <div>
-                        <div><img src="<%= productDetail.product_image %>" alt="<%= productDetail.name %>"></div>
+                    <div class="dashImages">
+                        <div class="prodImage">
+                            <img src="<%= productDetail.product_image %>" alt="<%= productDetail.name %>">
+                        </div>
                     </div>
-                    <div>
-                        <h2><%= productDetail.name %></h2>
-                    </div>
-                    <div>
-                        <p><%= productDetail.description %></p>
-                    </div>
-                    <div>
-                        <div><p><%= productDetail.price %> USD</p></div>
-                        <div><p><%= productDetail.stock_level %></p></div>
+                    <div class="eachProdDetails">
+                        <div class="eachDashDetails">
+                            <h2 class="itemName"><%= productDetail.name %></h2>
+                        </div>
+                        <div class="eachDashDetails">
+                            <p class="itemDesc"><%= productDetail.description %></p>
+                        </div>
+                        <div class="eachDashDetails">
+                            <div><p class="itemPrice">Price: &#36; <%= productDetail.price %> USD</p></div>
+                        </div>
+                        <div class="eachDashDetails">
+                            <div><p class="itemStock">Stock Level: <%= productDetail.stock_level %></p></div>
+                        </div>
                     </div>
                     <div class="dashboardAction">
                         <div>
-                            <p>Admin Action:</p>
+                            <p class="itemAction">Admin Action:</p>
                         </div>
                         <div class="dashActionFlex">
                             <div class="dashActionBtn">
@@ -45,14 +54,14 @@
                                         </button>
                                     <% } else { %>
                                         <input type="hidden" name="product_state" value="Hidden" />
-                                        <button type="submit" formmethod="post" class="eachButton">
+                                        <button type="submit" formmethod="post" class="eachButton hideBtn">
                                             Hide Product
                                         </button>
                                     <% } %>
                                 </form>
                             </div>
                             <div class="dashActionBtn">
-                                <button class="eachButton">
+                                <button class="eachButton editBtn">
                                     <a href="/edit/<%= productDetail._id %>" class="editButton">Edit Product</a>
                                 </button>
                             </div>

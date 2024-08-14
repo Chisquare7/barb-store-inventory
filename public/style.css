@@ -44,7 +44,7 @@ img {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 3em;
+  margin: 1em 0 3em 0;
 }
 
 .navContainerRight {
@@ -75,8 +75,8 @@ li + li {
 .appName {
   width: 30%;
   color: var(--input-field-color);
-	font-size: 1.25rem;
-	font-weight: 900;
+  font-size: 1.25rem;
+  font-weight: 900;
 }
 
 /* Styling of Home page */
@@ -179,12 +179,16 @@ li + li {
   height: 1.88rem;
 }
 
-.eachProdDetails {
+.eachProdDetails,
+.eachDashDetails {
   margin-top: 0.5em;
 }
 
 .itemName,
-.itemPrice {
+.itemPrice,
+.itemStock,
+.itemDesc,
+.itemAction {
   font-size: 1.1rem;
   font-weight: 400;
 }
@@ -193,8 +197,15 @@ li + li {
   color: var(--main-text-color);
 }
 
-.itemPrice {
+.itemPrice,
+.itemStock,
+.itemDesc,
+.itemAction {
   color: var(--primary-color);
+}
+
+.itemDesc {
+  font-size: 0.875rem;
 }
 
 .prodItem {
@@ -387,6 +398,52 @@ li + li {
   font-weight: 500;
 }
 
+/* *** One Product page for scripts **** */
+
+.sizeBoxes,
+.colorBoxes {
+  width: 45px;
+  height: 45px;
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  border-radius: 0.625rem;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 45px;
+  background-color: #e8eff4;
+  margin: 0.5em 0 2em;
+}
+
+.selected {
+  background-color: #193364;
+  color: #ffcc88;
+}
+
+.colorBoxes {
+  border: 1.5px solid #e8eff4;
+}
+
+.colorPicker {
+  display: none;
+}
+
+.redIcon {
+  filter: hue-rotate(0deg) saturate(1000%) brightness(0.5);
+}
+
+.cartTotalRed,
+#cartTotalDisplay {
+  background-color: red;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  padding: 2px;
+  border-radius: 5px;
+}
+
 /* Styling of Login Page */
 
 .navLine {
@@ -395,7 +452,6 @@ li + li {
 }
 
 .topNavContainer {
-  width: 90%;
   margin: 0 auto;
 }
 
@@ -735,4 +791,56 @@ li + li {
   color: var(--primary-color);
   font-size: 1.25rem;
   padding: 1.25em 0;
+}
+
+/* Styling of Dashboard Page */
+
+.dashImages {
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--main-bg-color);
+  padding: 2em 2em 3em 3em;
+  border-radius: 0.625rem;
+  overflow: hidden;
+}
+
+.dashboardAction {
+  margin-top: 1em;
+}
+
+.dashActionFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5em;
+}
+
+.eachButton {
+  padding: 0.5em;
+  border-radius: 0.625rem;
+  color: var(--main-bg-color);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.hideBtn {
+  background-color: #dc3545;
+}
+
+.editBtn {
+  background-color: #007bff;
+}
+
+.editButton {
+  color: var(--main-bg-color);
+}
+
+/* Styling of the Add Product Page */
+
+.addProdMain {
+  margin: 3em 0;
 }

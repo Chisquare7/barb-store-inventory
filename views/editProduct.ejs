@@ -3,20 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/style.css" />
     <title><%=appName%> | Edit Product</title>
   </head>
   <body>
-    <div>
-        <div>
-            <header>
-                <div class="navContainer">
-                    <div class="appName">
-                        <a href="/home" class="appName"><%=appName%></a>
+        <div class="overall">
+            <div class="navLine">
+                <div class="topNavContainer">
+                    <div class="navFlex">
+                        <div class="navIcons">
+                            <a href="/dashboard">
+                                <img src="../public/assets/back_icon.png" alt="Back Icon">
+                            </a>
+                            <span class="tooltip">Dashboard</span>
+                        </div>
+                        <div class="navHeading">
+                            <h1 class="navHead">Edit Product</h1>
+                        </div>
+                        <div class="navIcons">
+                        </div>
                     </div>
-                    <div><%-include("partials/header.ejs")-%></div>
                 </div>
-            </header>
-            <main>
+            </div>
+            <main class="addProdMain">
                 <form action="/products/edit-product/<%= productToEdit._id %>" method="post">
                     <label for="name" class="labelContainer loginInput">
                         Product Name
@@ -73,7 +82,6 @@
                         />
                     </label>
                     <div id="variations">
-                        <p>Variations</p>
                         <% productToEdit.variations.forEach((variation, index) => { %>
                             <div class="variation">
                                 <label for="size" class="labelContainer loginInput">
@@ -112,12 +120,11 @@
                             </div>
                         <% }) %>
                     </div>
-                    <div>
-                        <button type="submit">Update Product</button>
+                    <div class="formButton">
+                        <button type="submit" class="formSubmitButton formInput">Update Product</button>
                     </div>
                 </form>
             </main>
         </div>
-    </div>
   </body>
 </html>

@@ -72,7 +72,8 @@
                                             </button>
                                         </form>
                                     </div>
-                                    <div><p>1</p></div>
+                                    <div><p><%= item.quantity %></p></div>
+                                    <!-- <div><p>1</p></div> -->
                                     <div>
                                         <form action="/remove-from-cart" method="post">
                                             <input type="hidden" name="productId" value="<%= productId %>">
@@ -111,7 +112,7 @@
                                 <p class="orderAmountDetails subTotalAmt">Subtotal</p>
                             </div>
                             <div>
-                                <p class="orderAmountDetails subTotalAmt">$<%= Object.values(cartItems).reduce((total, item) => total + item.price, 0).toFixed(2) %></p>
+                                <p class="orderAmountDetails subTotalAmt">$<%= Object.values(cartItems).reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2) %></p>
                             </div>
                         </div>
                         <div class="deliveryContainer eachOrderTotalAmt">
@@ -125,7 +126,7 @@
                 <div>
                     <div class="orderTotalContainer eachOrderTotalAmt">
                         <div><p class="orderAmountDetails totalAmt">Total</p></div>
-                        <div><p class="orderAmountDetails totalAmt">$<%= Object.values(cartItems).reduce((total, item) => total + item.price, 0).toFixed(2) %></p></div>
+                        <div><p class="orderAmountDetails totalAmt">$<%= Object.values(cartItems).reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2) %></p></div>
                     </div>
                 </div>
                 <div class="orderShipAction">

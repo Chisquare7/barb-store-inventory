@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../public/style.css" />
     <title><%=appName%> | All Products</title>
-    <style>
+    <!-- <style>
       .redIcon {
         filter: hue-rotate(0deg) saturate(1000%) brightness(0.5);
       }
@@ -18,12 +18,14 @@
         padding: 2px;
         border-radius: 5px;
       }
-    </style>
+    </style> -->
     <script>
-      document.addEventListener("DOMContentLoaded", function(){
+      document.addEventListener("DOMContentLoaded", function () {
         let cartTotal = 0;
-        const cartItems = {};
+        const cartItemsRaw = '<%- JSON.stringify(cartItems || {}) %>';
 
+        const cartItems = JSON.parse(cartItemsRaw);
+        
         function cartTotalUpdated(price, isAdding) {
           if (isAdding) {
             cartTotal += price;
@@ -36,13 +38,24 @@
           cartTotalDisplay.classList.add("cartTotalRed");
         }
 
-        document.querySelectorAll(".cartIcon img").forEach(icon => {
-          icon.addEventListener("click", function(event) {
+        document.querySelectorAll(".cartIcon img").forEach((icon) => {
+          icon.addEventListener("click", function (event) {
             event.preventDefault();
 
-            const priceElement = this.closest(".eachProdBox").querySelector(".itemPrice");
-            const price = parseFloat(priceElement.textContent.replace("$", "").trim());
+            const priceElement =
+              this.closest(".eachProdBox").querySelector(".itemPrice");
+            const price = parseFloat(
+              priceElement.textContent.replace("$", "").trim()
+            );
             const productId = this.dataset.productId;
+            const productName =
+              this.closest(".eachProdBox").dataset.productName;
+            const productImage =
+              this.closest(".eachProdBox").dataset.productImage;
+            const productSize =
+              this.closest(".eachProdBox").dataset.productSize;
+            const productColor =
+              this.closest(".eachProdBox").dataset.productColor;
             const isAlreadyInCart = cartItems[productId];
 
             if (isAlreadyInCart) {
@@ -50,13 +63,49 @@
               delete cartItems[productId];
             } else {
               cartTotalUpdated(price, true);
-              cartItems[productId] = true
+              cartItems[productId] = {
+                price,
+                productName,
+                productImage,
+                productSize,
+                productColor,
+              };
             }
 
-            this.classList.toggle("redIcon", !isAlreadyInCart)
-          })
-        })
-      })
+            this.classList.toggle("redIcon", !isAlreadyInCart);
+
+            const payLoad = {
+              productId,
+              price,
+              productName,
+              productImage,
+              productSize,
+              productColor,
+            };
+
+            fetch("/add-to-cart", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payLoad),
+            })
+              .then((response) => {
+                return response.json();
+              })
+              .then((data) => {
+                if (data.success) {
+                  console.log("Cart updated successfully");
+                } else {
+                  console.error("Failed to update cart");
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          });
+        });
+      });
     </script>
   </head>
   <body>
@@ -67,7 +116,7 @@
             <div class="navFlex">
               <div class="navIcons">
                 <a href="/home">
-                  <img src="../public/assets/back_icon.png" alt="Back Icon">
+                  <img src="../public/assets/back_icon.png" alt="Back Icon" />
                 </a>
                 <span class="tooltip">Home</span>
               </div>
@@ -76,7 +125,10 @@
               </div>
               <div class="navIcons">
                 <a href="/orders">
-                  <img src="../public/assets/shopping-icon.png" alt="Shopping Icon">
+                  <img
+                    src="../public/assets/shopping-icon.png"
+                    alt="Shopping Icon"
+                  />
                 </a>
                 <span class="tooltip">Cart</span>
                 <span id="cartTotalDisplay">$0.00</span>
@@ -87,30 +139,40 @@
         <main>
           <div class="prodGrid allProdGrid">
             <% productDetails.forEach(function(productDetail, index) { %>
-              <a href="/products/<%= productDetail._id %>">
-                <div class="eachProdBox">
-                  <div class="eachProdImg">
-                    <div class="cartIcon">
-                      <img src="../public/assets/shopping-icon.png" alt="Cart Icon" data-product-id="<%= productDetail._id %>">
-                    </div>
-                    <div class="prodImage allProdImg">
-                      <img src="<%= productDetail.product_image %>" alt="<%= productDetail.name %>">
-                    </div>
+            <a href="/products/<%= productDetail._id %>">
+              <div
+                class="eachProdBox"
+                data-product-id="<%= productDetail._id %>"
+                data-product-name="<%= productDetail.name %>"
+                data-product-image="<%= productDetail.product_image %>"
+                data-product-size="No size" 
+                data-product-color="No color"
+              >
+                <div class="eachProdImg">
+                  <div class="cartIcon">
+                    <img
+                      src="../public/assets/shopping-icon.png"
+                      alt="Cart Icon"
+                      data-product-id="<%= productDetail._id %>"
+                    />
                   </div>
-                  <div class="eachProdDetails">
-                    <div class="prodName prodItem">
-                      <p class="itemName">
-                        <%- productDetail.name %>
-                      </p>
-                    </div>
-                    <div class="prodPrice prodItem">
-                      <p class="itemPrice">
-                        &#36; <%- productDetail.price %>
-                      </p>
-                    </div>
+                  <div class="prodImage allProdImg">
+                    <img
+                      src="<%= productDetail.product_image %>"
+                      alt="<%= productDetail.name %>"
+                    />
                   </div>
                 </div>
-              </a>
+                <div class="eachProdDetails">
+                  <div class="prodName prodItem">
+                    <p class="itemName"><%- productDetail.name %></p>
+                  </div>
+                  <div class="prodPrice prodItem">
+                    <p class="itemPrice">&#36; <%- productDetail.price %></p>
+                  </div>
+                </div>
+              </div>
+            </a>
             <% }); %>
           </div>
         </main>

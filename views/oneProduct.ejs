@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../public/style.css" />
     <title>Document</title>
-    <style>
+    <!-- <style>
       .sizeBoxes,
       .colorBoxes {
         width: 45px;
@@ -48,11 +48,13 @@
         padding: 2px;
         border-radius: 5px;
       }
-    </style>
+    </style> -->
     <script>
       document.addEventListener("DOMContentLoaded", function(){
         let cartTotal = 0;
-        const cartItems = {};
+        const cartItemsRaw = '<%- JSON.stringify(cartItems || {}) %>';
+
+        const cartItems = JSON.parse(cartItemsRaw);
 
         function cartTotalUpdated(price, isAdding) {
           if (isAdding) {
@@ -73,6 +75,10 @@
             const priceElement = document.querySelector(".oneProdAmt");
             const price = parseFloat(priceElement.textContent.replace("$", "").trim());
             const productId = this.dataset.productId;
+            const productName = document.querySelector(".oneProdHead").textContent;
+            const productImage = document.querySelector(".productImage").src;
+            const productSize = document.querySelector("#selectedSize").value;
+            const productColor = document.querySelector("#selectedColor").value;
             const isAlreadyInCart = cartItems[productId];
 
             if (isAlreadyInCart) {
@@ -80,10 +86,38 @@
               delete cartItems[productId];
             } else {
               cartTotalUpdated(price, true);
-              cartItems[productId] = true
+              cartItems[productId] = {price, productName, productImage, productSize, productColor}
             }
 
-            this.classList.toggle("redIcon", !isAlreadyInCart)
+            this.classList.toggle("redIcon", !isAlreadyInCart);
+
+            const payLoad = {
+              productId,
+              price,
+              productName,
+              productImage,
+              productSize,
+              productColor
+            };
+
+            fetch("/add-to-cart", {
+              method: "POST",
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payLoad)
+            }).then(response => {
+              return response.json()
+            }).then(data => {
+              if (data.success) {
+                console.log("Cart updated successfully");
+              } else {
+                console.error("Failed to update cart")
+              }
+            }).catch(error => {
+              console.error("Error:", error)
+            })
+
           })
         });
 
@@ -132,32 +166,89 @@
             updateTotalPrice();
           }
         })
+
+        function selectSize(size) {
+          document.getElementById("selectedSize").value = size;
+          document.querySelectorAll(".sizeBoxes").forEach((box) => {
+            box.classList.remove("selected");
+          });
+          document.getElementById("size-" + size).classList.add("selected");
+        }
+
+        function selectColor(color) {
+          document.getElementById("selectedColor").value = color;
+          document.querySelectorAll(".colorBoxes").forEach((box) => {
+            box.style.border = "1px solid #000";
+          });
+          document.getElementById(color).style.border = "3px solid #000";
+        }
+
+        function setColorBoxBackgrounds() {
+          document.querySelectorAll(".colorBoxes").forEach((box) => {
+            const color = box.getAttribute("data-color");
+            box.style.backgroundColor = color;
+          });
+        }
+
+        document.querySelectorAll(".sizeBoxes").forEach(box => {
+          box.addEventListener("click", function() {
+            const size = this.getAttribute("data-size");
+            selectSize(size);
+          })
+        })
+
+        document.querySelectorAll(".colorBoxes").forEach(box => {
+          box.addEventListener("click", function() {
+            const color = this.getAttribute("data-color");
+            selectColor(color);
+          })
+        })
+
+        setColorBoxBackgrounds()
+
       })
 
-      function selectSize(size) {
-        document.getElementById("selectedSize").value = size;
-        document.querySelectorAll(".sizeBoxes").forEach((box) => {
-          box.classList.remove("selected");
-        });
-        document.getElementById("size-" + size).classList.add("selected");
-      }
 
-      function selectColor(color) {
-        document.getElementById("selectedColor").value = color;
-        document.querySelectorAll(".colorBoxes").forEach((box) => {
-          box.style.border = "1px solid #000";
-        });
-        document.getElementById(color).style.border = "3px solid #000";
-      }
+      // document.addEventListener("DOMContentLoaded", function() {
+      //   function selectSize(size) {
+      //     document.getElementById("selectedSize").value = size;
+      //     document.querySelectorAll(".sizeBoxes").forEach((box) => {
+      //       box.classList.remove("selected");
+      //     });
+      //     document.getElementById("size-" + size).classList.add("selected");
+      //   }
 
-      function setColorBoxBackgrounds() {
-        document.querySelectorAll(".colorBoxes").forEach((box) => {
-          const color = box.getAttribute("data-color");
-          box.style.backgroundColor = color;
-        });
-      }
+      //   function selectColor(color) {
+      //     document.getElementById("selectedColor").value = color;
+      //     document.querySelectorAll(".colorBoxes").forEach((box) => {
+      //       box.style.border = "1px solid #000";
+      //     });
+      //     document.getElementById(color).style.border = "3px solid #000";
+      //   }
 
-      document.addEventListener("DOMContentLoaded", setColorBoxBackgrounds);
+      //   function setColorBoxBackgrounds() {
+      //     document.querySelectorAll(".colorBoxes").forEach((box) => {
+      //       const color = box.getAttribute("data-color");
+      //       box.style.backgroundColor = color;
+      //     });
+      //   }
+
+      //   document.querySelectorAll(".sizeBoxes").forEach(box => {
+      //     box.addEventListener("click", function() {
+      //       const size = this.getAttribute("data-size");
+      //       selectSize(size);
+      //     })
+      //   })
+
+      //   document.querySelectorAll(".colorBoxes").forEach(box => {
+      //     box.addEventListener("click", function() {
+      //       const color = this.getAttribute("data-color");
+      //       selectColor(color);
+      //     })
+      //   })
+
+      //   setColorBoxBackgrounds()
+      // })
     </script>
   </head>
   <body>
@@ -187,6 +278,7 @@
             <img
               src="<%= oneProduct.product_image %>"
               alt="<%= oneProduct.name %>"
+              class="productImage"
             />
           </div>
         </div>
@@ -226,7 +318,7 @@
               name="product_id"
               value="<%= oneProduct._id %>"
             />
-            <label for="size" class="oneProdSub variationContainer">
+            <div class="oneProdSub variationContainer">
               Size
               <input type="hidden" id="selectedSize" name="size" required />
               <div class="variationBox">
@@ -236,14 +328,14 @@
                 <div
                   id="size-<%= size %>"
                   class="sizeBoxes variationSquare"
-                  onclick="selectSize('<%= size %>')"
+                  data-size="<%= size %>"
                 >
                   <%= size %>
                 </div>
                 <% }) %>
               </div>
-            </label>
-            <label for="color" class="oneProdSub variationContainer">
+            </div>
+            <div class="oneProdSub variationContainer">
               Color
               <input type="hidden" id="selectedColor" name="color" required />
               <div class="variationBox">
@@ -251,14 +343,13 @@
                 Set(oneProduct.variations.map(variation => variation.color))];
                 %> <% uniqueColors.forEach(color => { %>
                 <div
-                  id="<%= color %>"
+                  id="color-<%= color %>"
                   class="colorBoxes variationSquare"
-                  data-color="<%= color %>"
-                  onclick="selectColor('<%= color %>')"
+                  data-color="color-<%= color %>"
                 ></div>
                 <% }) %>
               </div>
-            </label>
+            </div>
             <div class="oneProdBtn">
               <button type="submit" class="oneProdAction">Add To Cart</button>
               <p class="oneProdInstruct"><em class="instructItalic">Please click on the item size and color boxes before adding to your cart</em></p>

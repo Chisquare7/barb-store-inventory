@@ -3,144 +3,226 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/style.css" />
     <title>Document</title>
-    <style>
-        .sizeBoxes, .colorBoxes{
-            width: 30px;
-            height: 30px;
-            display: inline-block;
-            cursor: pointer;
-            border: 1px solid #000;
-            text-align: center;
-            line-height: 30px;
-            background-color: lightgrey;
-        }
+    <!-- <style>
+      .sizeBoxes,
+      .colorBoxes {
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+        cursor: pointer;
+        border: 1px solid #000;
+        text-align: center;
+        line-height: 30px;
+        background-color: lightgrey;
+      }
 
-        .selected {
-            background-color: grey;
-        }
+      .selected {
+        background-color: grey;
 
-        .colorPicker {
-            display: none;
-        }
-    </style>
+      }
+
+      .colorPicker {
+        display: none;
+      }
+    </style> -->
     <script>
-        function pickSize(size) {
-            document.getElementById("size").value = size;
-            document.querySelectorAll(".sizeBoxes").forEach(box => {
-                box.classList.remove("selected")
-            });
-            document.getElementById('size-' + size).classList.add('selected');
-        }
 
-        function pickColor(color) {
-            document.getElementById("color").value = color;
+        document.addEventListener("DOMContentLoaded", function() {
+            function pickSize(size) {
+                document.getElementById("size").value = size;
+                document.querySelectorAll(".sizeBoxes").forEach((box) => {
+                    box.classList.remove("selected");
+                });
+                document.getElementById("size-" + size).classList.add("selected");
+            }
+
+            function pickColor(color) {
+                document.getElementById("color").value = color;
+                document.querySelectorAll(".colorBoxes").forEach((box) => {
+                    box.style.border = "1px solid #000";
+                });
+                document.getElementById(color).style.border = "3px solid #000";
+            }
+            
+            document.querySelectorAll(".sizeBoxes").forEach(box => {
+                box.addEventListener("click", function() {
+                    const size = this.getAttribute("data-size");
+                    pickSize(size);
+                })
+            })
+
             document.querySelectorAll(".colorBoxes").forEach(box => {
-                box.style.border = "1px solid #000";
-            });
-            document.getElementById(color).style.border = "3px solid #000"
-        }
+                box.addEventListener("click", function() {
+                    const color = this.getAttribute("data-color");
+                    pickSize(color);
+                })
+            })
+        })
     </script>
   </head>
   <body>
-    <div>
-        <header>
-            <div class="navContainer">
-                <div class="appName"><a href="/home"><%=appName%></a></div>
-                <div><%-include("partials/header.ejs")-%></div>
-            </div>
-        </header>
-        <main>
+    <div class="overall">
+        <div class="navLine">
+			<div class="topNavContainer">
+				<div class="navFlex">
+					<div class="navIcons">
+						<a href="/dashboard">
+							<img src="../public/assets/back_icon.png" alt="Back Icon">
+						</a>
+						<span class="tooltip">Dashboard</span>
+					</div>
+					<div class="navHeading">
+						<h1 class="navHead">Add Product</h1>
+					</div>
+					<div class="navIcons">
+					</div>
+				</div>
+			</div>
+		</div>
+        <main class="addProdMain">
             <form action="/products/add-product" method="post">
-                <label for="name" class="labelContainer loginInput">
-                    Product Name
-                    <input
+            <label for="name" class="labelContainer loginInput">
+                Product Name
+                <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Product name"
+                class="inputField"
+                required
+                />
+            </label>
+            <label for="description" class="labelContainer loginInput">
+                Product Description
+                <textarea
+                name="description"
+                id="description"
+                cols="30"
+                rows="10"
+                class="inputField"
+                placeholder="Write your product description here"
+                required
+                ></textarea>
+            </label>
+            <label for="price" class="labelContainer loginInput">
+                Product Price
+                <input
+                type="number"
+                id="price"
+                name="price"
+                placeholder="Price of Product"
+                class="inputField"
+                required
+                />
+            </label>
+            <label for="product_image" class="labelContainer loginInput">
+                Product Image URL
+                <input
+                type="text"
+                id="product_image"
+                name="product_image"
+                placeholder="Product Image Link"
+                class="inputField"
+                required
+                />
+            </label>
+            <label for="stock_level" class="labelContainer loginInput">
+                Product Stock Level
+                <input
+                type="number"
+                id="stock_level"
+                name="stock_level"
+                placeholder="Product stock level"
+                class="inputField"
+                required
+                />
+            </label>
+            <div id="variations">
+                <div class="variation">
+                    <label for="size" class="labelContainer loginInput">
+                        Product Size
+                        <input
+                        type="hidden"
+                        id="size"
+                        name="variations[0][size]"
+                        required
+                        />
+                        <div>
+                        <% for (let i = 39; i <= 48; i++) { %>
+                        <div
+                            id="size-<%= i %>"
+                            class="sizeBoxes variationSquare"
+                            data-size="<%= i %>"
+                        >
+                            <%= i %>
+                        </div>
+                        <% } %>
+                        </div>
+                    </label>
+                    <label for="color" class="labelContainer loginInput">
+                        Product Color
+                        <input
+                        type="hidden"
+                        id="color"
+                        name="variations[0][color]"
+                        required
+                        />
+                        <div>
+                        <div
+                            id="red"
+                            class="colorBoxes variationSquare"
+                            style="background-color: red"
+                            data-color="red"
+                        ></div>
+                        <div
+                            id="blue"
+                            class="colorBoxes variationSquare"
+                            style="background-color: blue"
+                            data-color="blue"
+                        ></div>
+                        <div
+                            id="green"
+                            class="colorBoxes variationSquare"
+                            style="background-color: green"
+                            data-color="green"
+                        ></div>
+                        <div
+                            id="black"
+                            class="colorBoxes variationSquare"
+                            style="background-color: black"
+                            data-color="black"
+                        ></div>
+                        <div
+                            id="white"
+                            class="colorBoxes variationSquare"
+                            style="background-color: white"
+                            data-color="white"
+                        ></div>
+                        <div
+                            id="brown"
+                            class="colorBoxes variationSquare"
+                            style="background-color: brown"
+                            data-color="brown"
+                        ></div>
+                        </div>
+                    </label>
+                    <label for="additionalDetails" class="labelContainer loginInput">
+                        Product Additional Details
+                        <input
                         type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Product name"
+                        name="variations[0][additionalDetails]"
+                        placeholder="Product other details"
                         class="inputField"
                         required
-                    />
-                </label>
-                <label for="description" class="labelContainer loginInput">
-                    Product Description
-                    <textarea name="description" id="description" cols="30" rows="10" class="inputField" placeholder="Write your product description here" required></textarea>
-                </label>
-                <label for="price" class="labelContainer loginInput">
-                    Product Price
-                    <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        placeholder="Price of Product"
-                        class="inputField"
-                        required
-                    />
-                </label>
-                <label for="product_image" class="labelContainer loginInput">
-                    Product Image URL
-                    <input
-                        type="text"
-                        id="product_image"
-                        name="product_image"
-                        placeholder="Product Image Link"
-                        class="inputField"
-                        required
-                    />
-                </label>
-                <label for="stock_level" class="labelContainer loginInput">
-                    Product Stock Level
-                    <input
-                        type="number"
-                        id="stock_level"
-                        name="stock_level"
-                        placeholder="Product stock level"
-                        class="inputField"
-                        required
-                    />
-                </label>
-                <div id="variations">
-                    <p>Variations</p>
-                    <div class="variation">
-                        <label for="size" class="labelContainer loginInput">
-                            Product Size
-                            <input type="hidden" id="size" name="variations[0][size]" required>
-                            <div>
-                                <% for (let i = 39; i <= 48; i++) { %>
-                                    <div id="size-<%= i %>" class="sizeBoxes" onclick="pickSize('<%= i %>')"><%= i %></div>
-                                <% } %>
-                            </div>
-                        </label>
-                        <label for="color" class="labelContainer loginInput">
-                            Product Color
-                            <input type="hidden" id="color" name="variations[0][color]" required>
-                            <div>
-                                <div id="red" class="colorBoxes" style="background-color: red;" onclick="pickColor('red')"></div>
-                                <div id="blue" class="colorBoxes" style="background-color: blue;" onclick="pickColor('blue')"></div>
-                                <div id="green" class="colorBoxes" style="background-color: green;" onclick="pickColor('green')"></div>
-                                <div id="black" class="colorBoxes" style="background-color: black;" onclick="pickColor('black')"></div>
-                                <div id="white" class="colorBoxes" style="background-color: white;" onclick="pickColor('white')"></div>
-                                <div id="brown" class="colorBoxes" style="background-color: brown;" onclick="pickColor('brown')"></div>
-                            </div>
-                        </label>
-                        <label for="additionalDetails" class="labelContainer loginInput">
-                            Product Additional Details
-                            <input
-                                type="text"
-                                name="variations[0][additionalDetails]"
-                                placeholder="Product other details"
-                                class="inputField"
-                                required
-                            />
-                        </label>
-                    </div>
+                        />
+                    </label>
                 </div>
-                <div>
-                    <button type="submit">
-                        Add Product
-                    </button>
-                </div>
+            </div>
+            <div class="formButton">
+                <button type="submit" class="formSubmitButton formInput">Add Product</button>
+            </div>
             </form>
         </main>
     </div>
