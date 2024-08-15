@@ -115,7 +115,7 @@ const confirmOrder = async (req, res) => {
         const newOrder = new orderModel({
             cartItems,
             totalAmount,
-            shippingInfoId: shippingInfo._id,
+            shippingInfo: shippingInfo._id,
         });
 
         await newOrder.save();

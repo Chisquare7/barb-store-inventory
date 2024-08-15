@@ -3,32 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/style.css" />
     <title>Document</title>
   </head>
   <body>
     <div class="overall">
-        <div>
+        <div class="thankyouFlex">
             <div>
                 <div>
-                    <img src="" alt="">
+                    <div class="thankyouImg">
+                        <img src="../public/assets/thankyou.png" alt="thankyou image">
+                    </div>
+                    <div class="thankyouContent">
+                        <div><p class="thankyouHead">Thank You For Your Order!</p></div>
+                        <div><p class="thankyouSubHead">Your order will be delivered on time</p></div>
+                        <div><p class="thankyouSubHead">Thank You!</p></div>
+                    </div>
                 </div>
-                <div></div>
-                <div><p>Thank You For Your Order!</p></div>
-                <div><p>Your order will be delivered on time</p></div>
-                <div><p>Thank You!</p></div>
             </div>
-        </div>
-        <div>
             <div>
-                <div class="formButton">
-                    <a href="/order-history">
-                        <button type="button" class="formSubmitButton formInput">View Orders</button>
-                    </a>
-                </div>
-                <div class="formButton">
-                    <a href="/products">
-                        <button type="button" class="formSubmitButton formInput">Continue Shopping</button>
-                    </a>
+                <div class="thankyouBtn">
+                    <div class="formButton">
+                        <a href="/order-history">
+                            <button type="button" class="formSubmitButton formInput thankyouAction">View Orders</button>
+                        </a>
+                    </div>
+                    <div class="formButton">
+                        <a href="/products">
+                            <button type="button" class="formSubmitButton formInput thankyouAction thankyouAct">Continue Shopping</button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
