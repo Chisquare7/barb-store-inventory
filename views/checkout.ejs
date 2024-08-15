@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/style.css" />
     <title>Document</title>
   </head>
   <body>
@@ -11,7 +12,7 @@
 			<div class="topNavContainer">
 				<div class="navFlex">
 					<div class="navIcons">
-						<a href="">
+						<a href="#">
 							<img src="../public/assets/back_icon.png" alt="Back Icon">
 						</a>
 						<span class="tooltip">Shipping Info</span>
@@ -23,40 +24,75 @@
 				</div>
 			</div>
 		</div>
-        <main>
-            <section>
-                <div>
+        <main class="checkMain">
+            <section class="checkTopLayout">
+                <div class="checkFlex checkPad">
                     <div>
-                        <p>My Order</p>
+                        <p class="checkHead checkTitle">My Order</p>
                     </div>
-                    <div><p class="orderTotalPrice"></p></div>
+                    <div>
+                        <p class="orderTotalPrice checkTitle">
+                            $ <%= totalAmount ? totalAmount.toFixed(2) : '0.00' %>
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <div>
-                        <div class="allOrderProdInfo"></div>
-                        <div class="totalPriceCount"></div>
+                <div class="checkBoxLayout">
+                    <div class="checkFlex checkPad checkProdDetail">
+                        <div class="allOrderProdInfo">
+                            <% if (cartItems && typeof cartItems === 'object') { %>
+                                <% Object.keys(cartItems).forEach(key => { %>
+                                    <% let item = cartItems[key]; %>
+                                    <p class="eachCheckDetail">
+                                        <%= item.productName || 'Unknown Product' %>
+                                    </p>
+                                <% }) %>
+                            <% } else { %>
+                                <p>No items found in the cart </p>
+                            <% } %> 
+                            
+                        </div>
+                        <div class="totalPriceCount">
+                            <% Object.keys(cartItems).forEach(key => { %>
+                                <% let item = cartItems[key]; %>
+                                <p class="eachCheckDetail">
+                                    $<%= (item.quantity * item.price).toFixed(2) %>
+                                </p>
+                            <% }) %>
+                        </div>
                     </div>
-                    <div>
-                        <div><p>Delivery</p></div>
-                        <div><p>Free</p></div>
+                    <div class="checkFlex checkPad checkStatus">
+                        <div><p class="checkDelivery eachCheckDetail">Delivery</p></div>
+                        <div><p class="checkFree eachCheckDetail">Free</p></div>
                     </div>
                 </div>
             </section>
-            <section>
-                <div><p>Shipping & Payment Info</p></div>
-                <div>
-                    <div>
-                        <div class="buyerName"><p></p></div>
-                        <div class="shippingAddress"><p></p></div>
-                        <div class="cardNumber"></div>
+            <% if (shippingInfo && cartItems) { %>
+                <section>
+                    <div class="checkPad"><p class="checkShippingTitle checkTitle">Shipping & Payment Info</p></div>
+                    <div class="checkBoxLayout">
+                        <div class="checkPad">
+                            <div class="buyerName">
+                                <p class="eachCheckDetail"><%= shippingInfo.name %></p>
+                            </div>
+                            <div class="shippingAddress">
+                                <p class="eachCheckDetail"><%= shippingInfo.delivery_address %></p>
+                            </div>
+                            <div class="cardNumber">
+                                <p class="eachCheckDetail">**** **** **** <%= shippingInfo.card_number.slice(-4) %></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="checkBtnLayout">
+                    <div class="formButton">
+                        <form action="/confirm-order" method="post">
+                            <input type="hidden" name="shippingInfoId" value="<%= shippingInfo._id %>">
+                            <button type="submit" class="formSubmitButton formInput">Confirm Order</button>
+                        </form>
                     </div>
                 </div>
-            </section>
-            <div>
-                <div class="formButton">
-                    <button type="submit" class="formSubmitButton formInput">Confirm Order</button>
-                </div>
-            </div>
+            <% } %>
+            
         </main>
     </div>
   </body>

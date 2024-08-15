@@ -844,3 +844,66 @@ li + li {
 .addProdMain {
   margin: 3em 0;
 }
+
+
+/* Styling of the Checkout Page */
+
+.checkTopLayout {
+  margin: 3em 0;
+}
+
+.checkBoxLayout {
+  padding: 2em 0;
+  background-color: var(--main-bg-color);
+  border-top: 3px solid var(--main-text-color);
+  border-bottom: 3px solid var(--main-text-color);
+  margin-top: 1em;
+}
+
+.checkFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkPad {
+  width: 97%;
+  margin: 0 auto;
+}
+
+.checkBtnLayout {
+  margin-top: 2em;
+}
+
+.eachCheckDetail {
+  color: var(--main-text-color);
+  font-size: 1.12rem;
+  line-height: 2rem;
+}
+
+.checkFree {
+  color: var(--button-bg-color);
+}
+
+.checkTitle {
+  color: var(--primary-color);
+}
+
+.checkHead {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.orderTotalPrice {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.checkShippingTitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.checkStatus {
+  margin-top: 1em;
+}

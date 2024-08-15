@@ -7,8 +7,12 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const adminRoute = require("./admin/adminRoute");
 const productRoute = require("./products/productRoute");
+const orderRoute = require("./orders/orderRoute");
+const orderController = require("./orders/orderController")
 const productModel = require("./models/productModel");
 const variationModel = require("./models/variationModel");
+const shippingInfoModel = require("./models/shippingInfoModel");
+const orderModel = require("./models/orderModel");
 
 const app = express();
 require("dotenv").config();
@@ -20,20 +24,14 @@ app.locals.appName = "Barb Hub";
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(cookieParser());
-app.use("/public", express.static("public"));
-app.use("/admin", adminRoute);
-app.use("/products", productRoute);
 
 const store = new MongoDBStore({
   uri: process.env.DB_URL,
-  collection: "sessions"
+  collection: "sessions",
 });
 
-store.on("error", function(error) {
-  console.error("Session store error:", error)
+store.on("error", function (error) {
+  console.error("Session store error:", error);
 });
 
 app.use(
@@ -45,6 +43,23 @@ app.use(
     cookie: { secure: false },
   })
 );
+
+app.use((req, res, next) => {
+  if (!req.session.logged) {
+    console.log("Session Data:", req.session);
+    req.session.logged = true;
+  }
+  next();
+});
+
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use("/public", express.static("public"));
+app.use("/admin", adminRoute);
+app.use("/products", productRoute);
+app.use("/orders", orderRoute);
+
 
 app.use(function (req, res, next) {
   res.setHeader(
@@ -188,7 +203,8 @@ app.get("/orders", (req, res) => {
   if (Object.keys(cartItems).length === 0) {
     res.status(200).render("emptyCart");
   } else {
-    res.status(200).render("orders", { cartItems });
+    const totalAmount = Object.values(cartItems).reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2);
+    res.status(200).render("orders", { cartItems, totalAmount });
   }
 });
 
@@ -241,6 +257,65 @@ app.post("/remove-from-cart", (req, res) => {
 
   res.json({ success: true });
 });
+
+
+
+
+
+app.post("/confirm-order", async (req, res) => {
+  try {
+    const response = await orderController.confirmOrder(req, res);
+
+    if (response.code === 200) {
+      res.redirect("/thankyou");
+    } else {
+      res.status(response.code).send(response.message);
+    }
+  } catch (error) {
+    console.error("Error confirming order:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/checkout", async (req, res) => {
+  try {
+    const cartItems = req.session.cartItems || {};
+    const shippingInfoId = req.session.shippingInfoId;
+    const shippingInfo = await shippingInfoModel.findById(shippingInfoId);
+    const totalAmount = req.session.totalAmount;
+
+    res.render("checkout", {
+      cartItems,
+      shippingInfo,
+      totalAmount
+    })
+  } catch (error) {
+    console.error("Error rendering checkout page:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
+app.get("/thankyou", (req, res) => {
+  res.render("thankYou");
+});
+
+
+app.get("/order-history", async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const orders = await orderModel.find({userId});
+
+    res.render("orderHistory", {
+      orders
+    });
+
+  } catch (error) {
+    console.error("Error fetching order history:", error);
+    res.status(500).send("Internal Server Error");
+  }
+})
+
 
 app.get("/logout", (req, res) => {
   res.clearCookie("jwt");

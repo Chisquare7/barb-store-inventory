@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/style.css" />
     <title>Document</title>
   </head>
   <body>
@@ -11,7 +12,7 @@
 			<div class="topNavContainer">
 				<div class="navFlex">
 					<div class="navIcons">
-						<a href="">
+						<a href="/orders">
 							<img src="../public/assets/back_icon.png" alt="Back Icon">
 						</a>
 						<span class="tooltip">Order</span>
@@ -23,10 +24,12 @@
 				</div>
 			</div>
 		</div>
-        <main>
-            <form action="/admin/login" method="post" class="FormInputContainer">
+        <main class="addProdMain">
+            <form action="/orders/submit-payment-info" method="post" class="FormInputContainer">
+                <input type="hidden" name="cartItems" value="<%= JSON.stringify(cartItems) %>">
+                <input type="hidden" name="totalAmount" value="<%= totalAmount %>">
                 <label for="name" class="labelContainer formInput">
-                    NAME
+                    Name
                     <input
                         type="text"
                         id="name"
@@ -37,7 +40,7 @@
                     />
                 </label>
                 <label for="phone_number" class="labelContainer formInput">
-                    PHONE NUMBER
+                    Phone Number
                     <input
                         type="tel"
                         id="phone_number"
@@ -48,7 +51,7 @@
                     />
                 </label>
                 <label for="email" class="labelContainer formInput">
-                    EMAIL
+                    Email
                     <input
                         type="email"
                         id="email"
@@ -59,7 +62,7 @@
                     />
                 </label>
                 <label for="delivery_address" class="labelContainer formInput">
-                    DELIVERY ADDRESS
+                    Delivery Address
                     <input
                         type="text"
                         id="delivery_address"
@@ -70,7 +73,7 @@
                     />
                 </label>
                 <label for="card_number" class="labelContainer formInput">
-                    CARD NUMBER
+                    Card Number
                     <input
                         type="text"
                         id="card_number"

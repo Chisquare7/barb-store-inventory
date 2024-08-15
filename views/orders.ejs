@@ -126,12 +126,15 @@
                 <div>
                     <div class="orderTotalContainer eachOrderTotalAmt">
                         <div><p class="orderAmountDetails totalAmt">Total</p></div>
-                        <div><p class="orderAmountDetails totalAmt">$<%= Object.values(cartItems).reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2) %></p></div>
+                        <!-- <div><p class="orderAmountDetails totalAmt">$<%= Object.values(cartItems).reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2) %></p></div> -->
+                        <div><p class="orderAmountDetails totalAmt">$<%= totalAmount %></p></div>
                     </div>
                 </div>
-                <div class="orderShipAction">
+                <form action="/orders/add-shipping-info" method="post" class="orderShipAction">
+                    <input type="hidden" name="cartItems" value="<%= JSON.stringify(cartItems) %>">
+                    <input type="hidden" name="totalAmount" value="<%= totalAmount %>">
                     <button type="submit" class="formSubmitButton orderShipInfo">Shipping & Payment Info</button>
-                </div>
+                </form>
             <% } %>  
         </main>
     </div>
