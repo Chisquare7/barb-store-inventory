@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link rel="stylesheet" href="../public/style.css" />
+    <title><%=appName%> | Order History</title>
   </head>
   <body>
     <div class="overall">
@@ -14,31 +15,37 @@
                         <a href="">
                             <img src="../public/assets/back_icon.png" alt="Back Icon">
                         </a>
-                        <span class="tooltip">Products</span>
+                        <span class="tooltip">thankyou</span>
                     </div>
                     <div class="navHeading">
-                        <h1 class="navHead">OrderHistory</h1>
+                        <h1 class="navHead">Order History</h1>
                     </div>
                     <div class="navIcons"></div>
                 </div>
             </div>
         </div>
-        <main>
-            <div>
-                <% orders.forEach(order => { %>
-                    <div>
-                        <div class="orderStatusContainer">
-                            <div class="orderTicket"><p><%= order._id %></p></div>
-                            <div class="orderStatus"><p><%= order.status %></p></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="orderDateContainer">
-                            <div class="orderDateTime"><p><%= order.createdAt.toDateString() %></p></div>
-                            <div class="orderTotalAmount"><p><%= order.totalAmount %></p></div>
-                        </div>
-                    </div>
-                <% }) %>
+        <main class="addProdMain">
+            <div class="orderHistLine">
+                <div class="eachOrderHist">
+                    <% if (orders && orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
+                            <div class="orderHistAbove">
+                                <div class="orderStatusContainer">
+                                    <div class="orderTicket"><p class="orderHistText orderHistTicket"><%= order._id %></p></div>
+                                    <div><p class="orderStatus"><%= order.status %></p></div>
+                                </div>
+                            </div>
+                            <div class="orderHistBelow">
+                                <div class="orderStatusContainer">
+                                    <div><p class="orderDateTime"><%= order.createdAt.toDateString() %></p></div>
+                                    <div class="orderTotalAmount"><p class="orderHistText orderHistAmt">&#36; <%= order.totalAmount %></p></div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p>No orders found</p>
+                    <% } %>
+                </div>
             </div>
         </main>
     </div>

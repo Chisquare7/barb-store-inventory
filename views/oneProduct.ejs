@@ -4,51 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../public/style.css" />
-    <title>Document</title>
-    <!-- <style>
-      .sizeBoxes,
-      .colorBoxes {
-        width: 45px;
-        height: 45px;
-        display: inline-block;
-        cursor: pointer;
-        border: none;
-        outline: none;
-        border-radius: .625rem;
-        font-size: 1rem;
-        font-weight: 700;
-        text-align: center;
-        line-height: 45px;
-        background-color: #e8eff4;
-        margin: .5em 0 2em;
-      }
-
-      .selected {
-        background-color: #193364;
-        color: #ffcc88;
-      }
-
-      .colorBoxes {
-        border: 1.5px solid #e8eff4;
-      }
-
-      .colorPicker {
-        display: none;
-      }
-
-      .redIcon {
-        filter: hue-rotate(0deg) saturate(1000%) brightness(0.5);
-      }
-
-      .cartTotalRed, #cartTotalDisplay {
-        background-color: red;
-        font-size: .875rem;
-        font-weight: 600;
-        color: white;
-        padding: 2px;
-        border-radius: 5px;
-      }
-    </style> -->
+    <title><%=appName%> | Product</title>
     <script>
       document.addEventListener("DOMContentLoaded", function(){
         let cartTotal = 0;
@@ -207,48 +163,6 @@
         setColorBoxBackgrounds()
 
       })
-
-
-      // document.addEventListener("DOMContentLoaded", function() {
-      //   function selectSize(size) {
-      //     document.getElementById("selectedSize").value = size;
-      //     document.querySelectorAll(".sizeBoxes").forEach((box) => {
-      //       box.classList.remove("selected");
-      //     });
-      //     document.getElementById("size-" + size).classList.add("selected");
-      //   }
-
-      //   function selectColor(color) {
-      //     document.getElementById("selectedColor").value = color;
-      //     document.querySelectorAll(".colorBoxes").forEach((box) => {
-      //       box.style.border = "1px solid #000";
-      //     });
-      //     document.getElementById(color).style.border = "3px solid #000";
-      //   }
-
-      //   function setColorBoxBackgrounds() {
-      //     document.querySelectorAll(".colorBoxes").forEach((box) => {
-      //       const color = box.getAttribute("data-color");
-      //       box.style.backgroundColor = color;
-      //     });
-      //   }
-
-      //   document.querySelectorAll(".sizeBoxes").forEach(box => {
-      //     box.addEventListener("click", function() {
-      //       const size = this.getAttribute("data-size");
-      //       selectSize(size);
-      //     })
-      //   })
-
-      //   document.querySelectorAll(".colorBoxes").forEach(box => {
-      //     box.addEventListener("click", function() {
-      //       const color = this.getAttribute("data-color");
-      //       selectColor(color);
-      //     })
-      //   })
-
-      //   setColorBoxBackgrounds()
-      // })
     </script>
   </head>
   <body>

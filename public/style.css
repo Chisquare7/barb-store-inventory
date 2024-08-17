@@ -618,6 +618,10 @@ li + li {
 
 /* Styling of Order Page */
 
+.orderPageMain {
+  margin-bottom: 3em;
+}
+
 .eachOrder {
   position: relative;
   border-bottom: 1.5px solid var(--main-bg-color);
@@ -953,4 +957,58 @@ li + li {
 .thankyouAct {
   background-color: var(--main-bg-color);
   color: var(--primary-color);
+}
+
+
+/* Styling of the orderHistory Page */
+
+.orderHistLine {
+  border-bottom: 4px solid var(--main-bg-color);
+  padding-bottom: 1.5em;
+}
+
+.eachOrderHist {
+  width: 97%;
+  margin: 0 auto;
+}
+
+.orderStatusContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orderHistAbove {
+  margin-top: 1em;
+  border-top: 4px solid var(--main-bg-color);
+  padding-top: 1.5em;
+}
+
+.orderHistBelow {
+  margin-top: 1em;
+}
+
+.orderHistText {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.orderHistTicket {
+  font-size: 1.25rem;
+}
+
+.orderHistAmt {
+  font-size: 1.125rem;
+}
+
+.orderDateTime {
+  font-size: 1.125rem;
+  color: var(--main-text-color);
+  font-weight: 400;
+}
+
+.orderStatus {
+  font-size: 1.125rem;
+  color: var(--button-bg-color);
+  font-weight: 400;
 }

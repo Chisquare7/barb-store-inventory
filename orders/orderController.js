@@ -1,36 +1,6 @@
 const orderModel = require("../models/orderModel");
 const shippingInfoModel = require("../models/shippingInfoModel");
-const productModel = require("../models/productModel")
-
-
-// const createOrder = async (req, res) => {
-//     try {
-//         const {cartItems, totalAmount} = req.body;
-
-//         if (!cartItems || !totalAmount) {
-//             return res.status(400).json({
-//                 error: "Missing required fields"
-//             })
-//         }
-
-//         const newOrder = new orderModel({
-//             cartItems: JSON.parse(cartItems),
-//             totalAmount,
-//             status: "Pending"
-//         })
-
-//         const savedOrder = await newOrder.save();
-
-//         req.session.orderId = savedOrder._id;
-
-//         console.log("Created Order ID:", savedOrder._id);
-
-//         res.status(200).json(savedOrder);
-//     } catch (error) {
-//         console.error("Error creating order:", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// }
+const productModel = require("../models/productModel");
 
 const renderPaymentInfoPage = (req, res) => {
     const {cartItems, totalAmount} = req.body;
@@ -76,9 +46,7 @@ const addShippingInfoAndProceedToCheckout = async (req, res) => {
 
 const checkout =  async (req, res) => {
     try {
-        const cartItemsString = req.session.cartItems || '{}';
-        const cartItems = JSON.parse(cartItemsString);
-        // const cartItems = req.session.cartItems;
+        const cartItems = typeof req.session.cartItems === 'string' ? JSON.parse(req.session.cartItems):req.session.cartItems;
         const shippingInfo = req.session.shippingInfo;
         let totalAmount = req.session.totalAmount;
 
@@ -106,7 +74,6 @@ const confirmOrder = async (req, res) => {
         const shippingInfo = req.session.shippingInfo;
         const cartItems = req.session.cartItems;
         const totalAmount = req.session.totalAmount;
-        // const shippingInfo = await shippingInfoModel.findById(req.body.shippingInfoId);
 
         if (!shippingInfo || !cartItems || !totalAmount) {
             return res.status(404).send("Required information not found")
@@ -116,6 +83,7 @@ const confirmOrder = async (req, res) => {
             cartItems,
             totalAmount,
             shippingInfo: shippingInfo._id,
+            status: "Confirmed"
         });
 
         await newOrder.save();
@@ -134,24 +102,38 @@ const confirmOrder = async (req, res) => {
             }
         }
 
-        req.session.cartItems = null;
-        req.session.totalAmount = null;
-        req.session.shippingInfo = null;
-
-        res.redirect("/thankyou")
+        return {
+            code: 200,
+            message: "Order confirmed"
+        }
     } catch (error) {
         console.error("Error confirming order:", error);
         res.status(500).send("Error confirming order")
     }
 }
 
-const thankYou = async (req, res) => {
+const thankYou = (req, res) => {
+
+    req.session.cartItems = null;
+    req.session.totalAmount = null;
+    req.session.shippingInfo = null;
+
     res.render("thankYou")
 }
 
-const orderHistory = async (user_id) => {
+const orderHistory = async () => {
     try {
-        const orders = await orderModel.find({user_id}).populate("shippingInfo");
+        const orders = await orderModel.find({}).populate("shippingInfo");
+
+        if (!orders || orders.length === 0) {
+            throw new Error("No orders found")
+        }
+
+        orders.forEach(order => {
+            if (!order._id) {
+                throw new Error("Order_id os missing")
+            }
+        })
         
         return {
             message: "Great! Orders retrieved successfully",

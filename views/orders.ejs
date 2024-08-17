@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../public/style.css" />
-    <title>Document</title>
+    <title><%=appName%> | Orders</title>
   </head>
   <body>
     <div class="overall">
@@ -29,7 +29,7 @@
 				</div>
 			</div>
 		</div>
-        <main>
+        <main class="orderPageMain">
             <% if (Object.keys(cartItems).length === 0) { %>
                 <p>No products in the cart.</p>
             <% } else { %>
@@ -73,7 +73,6 @@
                                         </form>
                                     </div>
                                     <div><p><%= item.quantity %></p></div>
-                                    <!-- <div><p>1</p></div> -->
                                     <div>
                                         <form action="/remove-from-cart" method="post">
                                             <input type="hidden" name="productId" value="<%= productId %>">
@@ -126,7 +125,6 @@
                 <div>
                     <div class="orderTotalContainer eachOrderTotalAmt">
                         <div><p class="orderAmountDetails totalAmt">Total</p></div>
-                        <!-- <div><p class="orderAmountDetails totalAmt">$<%= Object.values(cartItems).reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2) %></p></div> -->
                         <div><p class="orderAmountDetails totalAmt">$<%= totalAmount %></p></div>
                     </div>
                 </div>

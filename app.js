@@ -38,15 +38,14 @@ app.use(
   session({
     store: store,
     secret: process.env.SESSION_SECRET,
-    resave: false,
+    resave: true,
     saveUninitialized: true,
-    cookie: { secure: false },
+    cookie: { secure: false, maxAge: 60000 * 60 },
   })
 );
 
 app.use((req, res, next) => {
   if (!req.session.logged) {
-    console.log("Session Data:", req.session);
     req.session.logged = true;
   }
   next();
@@ -112,8 +111,6 @@ app.get("/dashboard", adminAuthenticator, async (req, res) => {
   const productDetails = await productModel.find({
     admin_id: res.locals.admin._id,
   });
-
-  console.log("Product details:", productDetails);
 
   res.status(200).render("dashboard", {
     navs: ["Dashboard", "Add Product", "Products", "Logout"],
@@ -280,8 +277,7 @@ app.post("/confirm-order", async (req, res) => {
 app.get("/checkout", async (req, res) => {
   try {
     const cartItems = req.session.cartItems || {};
-    const shippingInfoId = req.session.shippingInfoId;
-    const shippingInfo = await shippingInfoModel.findById(shippingInfoId);
+    const shippingInfo = req.session.shippingInfo;
     const totalAmount = req.session.totalAmount;
 
     res.render("checkout", {
@@ -303,8 +299,8 @@ app.get("/thankyou", (req, res) => {
 
 app.get("/order-history", async (req, res) => {
   try {
-    const userId = req.user._id;
-    const orders = await orderModel.find({userId});
+
+    const orders = await orderModel.find({});
 
     res.render("orderHistory", {
       orders
