@@ -5,6 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../public/style.css" />
     <title><%=appName%> | Edit Product</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function pickSize(size, index) {
+                const sizeInput = document.getElementById(`size-${index}`);
+                if(sizeInput) {
+                    sizeInput.value = size
+                }
+                document.querySelectorAll(`.sizeBoxes-${index}`).forEach((box) => {
+                    box.classList.remove("selected")
+                });
+
+                const selectedBox = document.getElementById(`size-${index}-${size}`);
+                if (selectedBox) {
+                    selectedBox.classList.add("selected");
+                }
+            }
+
+            function pickColor(color, index) {
+                const colorInput = document.getElementById(`color-${index}`);
+                if (colorInput) {
+                    colorInput.value = color
+                }
+
+                document.querySelectorAll(`.colorBoxes-${index}`).forEach((box) => {
+                    box.style.border = "1px solid #000"
+                });
+
+                const selectedBox = document.getElementById(`${color}-${index}`);
+                if(selectedBox) {
+                    selectedBox.style.border = "3px solid #000"
+                }
+            }
+
+            document.querySelectorAll(".sizeBoxes").forEach(box => {
+                box.addEventListener("click", function() {
+                    const size = this.getAttribute("data-size");
+                    const index = this.getAttribute("data-size-index")
+                    pickSize(size, index);
+                })
+            })
+
+            document.querySelectorAll(".colorBoxes").forEach(box => {
+                box.addEventListener("click", function() {
+                    const color = this.getAttribute("data-color");
+                    const index = this.getAttribute("data-color-index")
+                    pickColor(color, index)
+                })
+            })
+        })
+    </script>
   </head>
   <body>
         <div class="overall">
@@ -37,11 +87,12 @@
                             class="inputField"
                             required
                             value="<%= productToEdit.name %>"
+                            autocomplete="name"
                         />
                     </label>
                     <label for="description" class="labelContainer loginInput">
                         Product Description
-                        <textarea name="description" id="description" cols="30" rows="10" class="inputField" placeholder="Edit your product description here" required>
+                        <textarea name="description" id="description" cols="30" rows="10" class="inputField" placeholder="Edit your product description here" required autocomplete="description">
                             <%= productToEdit.description %>
                         </textarea>
                     </label>
@@ -55,6 +106,7 @@
                             class="inputField"
                             required
                             value="<%= productToEdit.price %>"
+                            autocomplete="price"
                         />
                     </label>
                     <label for="product_image" class="labelContainer loginInput">
@@ -67,6 +119,7 @@
                             class="inputField"
                             required
                             value="<%= productToEdit.product_image %>"
+                            autocomplete="product_image"
                         />
                     </label>
                     <label for="stock_level" class="labelContainer loginInput">
@@ -79,37 +132,40 @@
                             class="inputField"
                             required
                             value="<%= productToEdit.stock_level %>"
+                            autocomplete="stock_level"
                         />
                     </label>
                     <div id="variations">
                         <% productToEdit.variations.forEach((variation, index) => { %>
                             <div class="variation">
-                                <label for="size" class="labelContainer loginInput">
+                                <div class="labelContainer loginInput">
                                     Product Size
-                                    <input
-                                        type="text"
-                                        name="variations[<%= index %>][size]"
-                                        placeholder="Product Size"
-                                        class="inputField"
-                                        required
-                                        value="<%= variation.size %>"
-                                    />
-                                </label>
-                                <label for="color" class="labelContainer loginInput">
+                                    <input type="hidden" id="size-<%= index %>" name="variations[<%= index %>][size]" value="<%= variation.size %>" required>
+                                    <div>
+                                        <% for (let i = 39; i <= 48; i++) { %>
+                                            <div id="size-<%= index %>-<%= i %>" class="sizeBoxes sizeBoxes-<%= index %> variationSquare" data-size="<%= i %>" data-size-index="<%= index %>" <% if (variation.size == i) { %> class="selected" <% } %> >
+                                                <%= i %>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div class="labelContainer loginInput">
                                     Product Color
-                                    <input
-                                        type="text"
-                                        name="variations[<%= index %>][color]"
-                                        placeholder="Product Color"
-                                        class="inputField"
-                                        required
-                                        value="<%= variation.color %>"
-                                    />
-                                </label>
-                                <label for="additionalDetails" class="labelContainer loginInput">
+                                    <input type="hidden" id="color-<%= index %>" name="variations[<%= index %>][color]" value="<%= variation.color %>" required>
+                                    <div>
+                                        <div id="red-<%= index %>" class="colorBoxes colorBoxes-<%= index %> variationSquare" style="background-color: red;" data-color="red" data-color-index="<%= index %>" <% if (variation.color == 'red') { %> style="border: 3px solid #000;" <% } %>></div>
+                                        <div id="blue-<%= index %>" class="colorBoxes colorBoxes-<%= index %> variationSquare" style="background-color: blue;" data-color="blue" data-color-index="<%= index %>" <% if (variation.color == 'blue') { %> style="border: 3px solid #000;" <% } %>></div>
+                                        <div id="green-<%= index %>" class="colorBoxes colorBoxes-<%= index %> variationSquare" style="background-color: green;" data-color="green" data-color-index="<%= index %>" <% if (variation.color == 'green') { %> style="border: 3px solid #000;" <% } %>></div>
+                                        <div id="black-<%= index %>" class="colorBoxes colorBoxes-<%= index %> variationSquare" style="background-color: black;" data-color="black" data-color-index="<%= index %>" <% if (variation.color == 'black') { %> style="border: 3px solid #000;" <% } %>></div>
+                                        <div id="white-<%= index %>" class="colorBoxes colorBoxes-<%= index %> variationSquare" style="background-color: white;" data-color="white" data-color-index="<%= index %>" <% if (variation.color == 'white') { %> style="border: 3px solid #000;" <% } %>></div>
+                                        <div id="brown-<%= index %>" class="colorBoxes colorBoxes-<%= index %> variationSquare" style="background-color: brown;" data-color="brown" data-color-index="<%= index %>" <% if (variation.color == 'brown') { %> style="border: 3px solid #000;" <% } %>></div>
+                                    </div>
+                                </div>
+                                <label for="additionalDetails-<%= index %>" class="labelContainer loginInput">
                                     Product Additional Details
                                     <input
                                         type="text"
+                                        id="additionalDetails-<%= index %>"
                                         name="variations[<%= index %>][additionalDetails]"
                                         placeholder="Product other details"
                                         class="inputField"
