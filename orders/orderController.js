@@ -48,15 +48,18 @@ const checkout =  async (req, res) => {
     try {
         const cartItems = typeof req.session.cartItems === 'string' ? JSON.parse(req.session.cartItems):req.session.cartItems;
         const shippingInfo = req.session.shippingInfo;
-        let totalAmount = req.session.totalAmount;
+        let totalAmount = 0;
 
-        console.log("Cart Items:", JSON.stringify(cartItems, null, 2));
-
-        if (typeof totalAmount === "string") {
-            totalAmount = parseFloat(totalAmount);
+        if (cartItems) {
+          Object.keys(cartItems).forEach((key) => {
+            let item = cartItems[key];
+            totalAmount += item.quantity * item.price;
+          });
         }
 
-        if (!shippingInfo || Object.keys(cartItems).length === 0 || !totalAmount) {
+        req.session.totalAmount = totalAmount;
+
+        if (!shippingInfo || Object.keys(cartItems).length === 0 || totalAmount === 0) {
             return res.status(404).send("Required information is missing from the session.")
         }
 

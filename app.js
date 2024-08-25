@@ -213,7 +213,6 @@ app.get("/cart-items", (req, res) => {
 
 
 app.post("/add-to-cart", (req, res) => {
-  console.log("Received body:", req.body); 
   const {
     productId,
     price,
