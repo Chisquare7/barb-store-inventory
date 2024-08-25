@@ -205,7 +205,15 @@ app.get("/orders", (req, res) => {
   }
 });
 
+
+app.get("/cart-items", (req, res) => {
+  const cartItems = req.session.cartItems || {};
+  res.json({ success: true, cartItems });
+});
+
+
 app.post("/add-to-cart", (req, res) => {
+  console.log("Received body:", req.body); 
   const {
     productId,
     price,
@@ -236,7 +244,7 @@ app.post("/add-to-cart", (req, res) => {
   }
   req.session.cartItems = cartItems;
 
-  res.json({ success: true });
+  res.json({ success: true, cartItems });
 });
 
 app.post("/remove-from-cart", (req, res) => {
@@ -252,7 +260,7 @@ app.post("/remove-from-cart", (req, res) => {
   }
   req.session.cartItems = cartItems;
 
-  res.json({ success: true });
+  res.json({ success: true, cartItems });
 });
 
 

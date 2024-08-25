@@ -60,8 +60,6 @@ const editProduct = async (req, res) => {
             return res.redirect("/dashboard")
         }
 
-        console.log("Product successfully updated:", updatedProduct);
-
         if (variations.length > 0) {
 
             await variationModel.deleteMany({product_id: mongoose.Types.ObjectId.createFromHexString(productId)});
