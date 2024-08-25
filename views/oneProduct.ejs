@@ -12,17 +12,43 @@
 
         const cartItems = JSON.parse(cartItemsRaw);
 
-        function cartTotalUpdated(price, isAdding) {
+        function cartTotalUpdated(price, quantity, isAdding) {
+          const amount = price * quantity
           if (isAdding) {
-            cartTotal += price;
+            cartTotal += amount;
           } else {
-            cartTotal -= price;
+            cartTotal -= amount;
           }
 
           const cartTotalDisplay = document.getElementById("cartTotalDisplay");
           cartTotalDisplay.textContent = `$${cartTotal.toFixed(2)}`;
           cartTotalDisplay.classList.add("cartTotalRed");
         }
+
+        function updateTotalPrice(quantity) {
+          const price = parseFloat(document.querySelector(".oneProdAmt").textContent.replace("$", "").trim());
+          const totalPrice = quantity * price;
+          document.getElementById("cartTotalDisplay").textContent = `$${totalPrice.toFixed(2)}`;
+        }
+
+        const form = document.getElementById('addToCartForm')
+        const countElement = document.querySelector(".countZero");
+        let productQuantity = parseInt(countElement.textContent);
+
+        document.querySelector(".plusIcon").addEventListener("click", function() {
+          productQuantity++;
+          countElement.textContent = productQuantity;
+          updateTotalPrice(productQuantity);
+        })
+
+        document.querySelector(".minusIcon").addEventListener("click", function() {
+          if (productQuantity  > 0) {
+            productQuantity--;
+            countElement.textContent = productQuantity;
+            updateTotalPrice(productQuantity);
+          }
+        })
+
 
         document.querySelectorAll(".shopBag img").forEach(icon => {
           icon.addEventListener("click", function(event) {
@@ -37,24 +63,25 @@
             const productColor = document.querySelector("#selectedColor").value;
             const isAlreadyInCart = cartItems[productId];
 
-            if (isAlreadyInCart) {
-              cartTotalUpdated(price, false);
-              delete cartItems[productId];
-            } else {
-              cartTotalUpdated(price, true);
-              cartItems[productId] = {price, productName, productImage, productSize, productColor}
-            }
-
-            this.classList.toggle("redIcon", !isAlreadyInCart);
-
             const payLoad = {
               productId,
               price,
               productName,
               productImage,
               productSize,
-              productColor
+              productColor,
+              quantity: productQuantity
             };
+
+            if (isAlreadyInCart) {
+              cartTotalUpdated(price, cartItems[productId].quantity, false);
+              delete cartItems[productId];
+            } else {
+              cartTotalUpdated(price, productQuantity, true);
+              cartItems[productId] = {price, productName, productImage, productSize, productColor, quantity: productQuantity}
+            }
+
+            this.classList.toggle("redIcon", !isAlreadyInCart);
 
             fetch("/add-to-cart", {
               method: "POST",
@@ -80,47 +107,40 @@
         document.querySelector(".oneProdAction").addEventListener("click", function(event) {
           event.preventDefault();
 
-          const priceElement = document.querySelector(".oneProdAmt");
-          const price = parseFloat(priceElement.textContent.replace("$", "").trim());
-          const productId = document.querySelector(".shopBag img").dataset.productId;
-          const isAlreadyInCart = cartItems[productId];
+          const productQuantity = parseInt(countElement.textContent);
+          const productPrice = parseFloat(document.querySelector(".oneProdAmt").textContent.replace("$", "").trim());
 
-          if (isAlreadyInCart) {
-            cartTotalUpdated(price, false);
-            delete cartItems[productId];
-          } else {
-            cartTotalUpdated(price, true);
-            cartItems[productId] = true
-          }
+          document.getElementById("productQuantity").value = productQuantity;
+          document.getElementById("productPrice").value = productPrice;
 
-          document.querySelector(".shopBag img").classList.toggle("redIcon", !isAlreadyInCart)
-        })
+          fetch("/add-to-cart", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
 
-        
-        const priceElement = document.querySelector(".oneProdAmt");
-        const price = parseFloat(priceElement.textContent.replace("$", "").trim());
-        const countElement = document.querySelector(".countZero");
-        let productQuantity = parseInt(countElement.textContent);
+            body: JSON.stringify({
+              productId: document.querySelector("input[name='product_id']").value,
+              quantity: productQuantity,
+              price: productPrice,
+              productName: document.querySelector(".oneProdHead").textContent,
+              productImage: document.querySelector(".productImage").src,
+              productSize: document.querySelector("#selectedSize").value,
+              productColor: document.querySelector("#selectedColor").value
+            })
 
-        function updateTotalPrice() {
-          const totalPrice = productQuantity * price;
-          const cartTotalDisplay = document.getElementById("cartTotalDisplay");
-          cartTotalDisplay.textContent = `$${totalPrice.toFixed(2)}`;
-          cartTotalDisplay.classList.add("cartTotalRed");
-        }
+          }).then (response => response.json())
+            .then(data => {
+              if (data.success) {
+                window.location.href = "/orders";
+              } else {
+                console.error("Failed to update cart")
+              }
+            }).catch(error => {
+              console.error("Error:", error)
+            })
 
-        document.querySelector(".plusIcon").addEventListener("click", function() {
-          productQuantity++;
-          countElement.textContent = productQuantity;
-          updateTotalPrice();
-        })
-
-        document.querySelector(".minusIcon").addEventListener("click", function() {
-          if (productQuantity  > 0) {
-            productQuantity--;
-            countElement.textContent = productQuantity;
-            updateTotalPrice();
-          }
+          form.submit()
         })
 
         function selectSize(size) {
@@ -226,12 +246,16 @@
             <p class="oneProdSub">Description</p>
             <p class="oneProdSubhead"><%= oneProduct.description %></p>
           </div>
-          <form action="/order" method="post" class="oneProdLayout">
+          <form id="addToCartForm" action="/orders" method="post" class="oneProdLayout">
             <input
               type="hidden"
               name="product_id"
               value="<%= oneProduct._id %>"
             />
+            <input type="hidden" id="productQuantity" name="quantity" value="0">
+            <input type="hidden" id="productPrice" name="price" value="<%= oneProduct.price %>">
+            <input type="hidden" id="productName" name="productName" value="<%= oneProduct.name %>">
+            <input type="hidden" id="productImage" name="productImage" value="<%= oneProduct.product_image %>">
             <div class="oneProdSub variationContainer">
               Size
               <input type="hidden" id="selectedSize" name="size" required />

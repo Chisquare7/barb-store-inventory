@@ -200,10 +200,34 @@ app.get("/orders", (req, res) => {
   if (Object.keys(cartItems).length === 0) {
     res.status(200).render("emptyCart");
   } else {
-    const totalAmount = Object.values(cartItems).reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2);
+    const totalAmount = Object.values(cartItems).reduce((total, item) => {
+      return total + (parseFloat(item.price) * parseInt(item.quantity))
+    }, 0).toFixed(2);
     res.status(200).render("orders", { cartItems, totalAmount });
   }
 });
+
+app.post("/orders", (req, res) => {
+  const {product_id, quantity, price, size, color} = req.body;
+
+  if (!req.session.cartItems) {
+    req.session.cartItems = {};
+  }
+
+  if (req.session.cartItems[product_id]) {
+    req.session.cartItems[product_id].quantity += parseInt(quantity);
+  } else {
+    req.session.cartItems[product_id] = {
+      product_id,
+      price: parseFloat(price).toFixed(2),
+      size,
+      color,
+      quantity: parseInt(quantity),
+    };
+  }
+
+  res.redirect("/orders");
+})
 
 
 app.get("/cart-items", (req, res) => {
@@ -220,6 +244,7 @@ app.post("/add-to-cart", (req, res) => {
     productImage,
     productSize = "No size",
     productColor = "No color",
+    quantity = 1,
   } = req.body;
   if (!productId || !price || !productName || !productImage) {
     console.error("Missing required fields:", req.body);
@@ -231,15 +256,16 @@ app.post("/add-to-cart", (req, res) => {
   const cartItems = req.session.cartItems || {};
   if (!cartItems[productId]) {
     cartItems[productId] = {
-      price: parseFloat(price),
+      price: parseFloat(price) * quantity,
       productName,
       productImage,
       productSize,
       productColor,
-      quantity: 1,
+      quantity: parseInt(quantity)
     };
   } else {
-    cartItems[productId].quantity = (cartItems[productId].quantity || 0) + 1;
+    cartItems[productId].quantity += parseInt(quantity);
+    cartItems[productId].price = parseFloat(price) * cartItems[productId].quantity;
   }
   req.session.cartItems = cartItems;
 
