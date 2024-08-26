@@ -256,7 +256,7 @@ app.post("/add-to-cart", (req, res) => {
   const cartItems = req.session.cartItems || {};
   if (!cartItems[productId]) {
     cartItems[productId] = {
-      price: parseFloat(price) * quantity,
+      price: parseFloat(price),
       productName,
       productImage,
       productSize,
@@ -265,7 +265,6 @@ app.post("/add-to-cart", (req, res) => {
     };
   } else {
     cartItems[productId].quantity += parseInt(quantity);
-    cartItems[productId].price = parseFloat(price) * cartItems[productId].quantity;
   }
   req.session.cartItems = cartItems;
 

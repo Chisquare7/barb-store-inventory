@@ -134,7 +134,7 @@
                                     <div class="orderItemDetails">
                                         <div>
                                             <div class="orderItemName orderItemInfo"><%= item.productName %></div>
-                                            <div class="orderItemPrice orderItemInfo">$<%= item.price %></div>
+                                            <div class="orderItemPrice orderItemInfo">$<%= item.price.toFixed(2) %></div>
                                         </div>
                                         <div>
                                             <div class="orderItemSize orderItemInfo">Size: <%= item.productSize %></div>
